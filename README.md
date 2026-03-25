@@ -25,8 +25,8 @@ A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing 
 ```bash
 git clone https://github.com/yourusername/obsidian-vitepress-theme
 cd obsidian-vitepress-theme
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Then copy `manifest.json`, `main.js` to your Obsidian vault's `.obsidian/plugins/vitepress-theme/` folder.
@@ -80,6 +80,7 @@ Standard Obsidian callouts are styled to match VitePress:
 ### Code Blocks
 
 Code blocks get enhanced with:
+
 - Language label in header
 - Copy button on hover
 - Better syntax highlighting
@@ -88,26 +89,26 @@ Code blocks get enhanced with:
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Development with hot reload
-npm run dev
+pnpm run dev
 
 # Build for production
-npm run build
+pnpm run build
 ```
 
 ## Settings
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Enable code block styles | Enhanced code blocks | ✅ |
-| Enable container styles | Custom container styling | ✅ |
-| Enable typography styles | Typography improvements | ✅ |
-| Parse VitePress containers | Parse `:::` syntax | ✅ |
-| Process links | External link icons | ✅ |
-| Follow Obsidian theme | Adapt to Obsidian colors | ✅ |
-| Custom primary color | Brand color override | #3451b2 |
+| Setting                    | Description              | Default |
+| -------------------------- | ------------------------ | ------- |
+| Enable code block styles   | Enhanced code blocks     | ✅      |
+| Enable container styles    | Custom container styling | ✅      |
+| Enable typography styles   | Typography improvements  | ✅      |
+| Parse VitePress containers | Parse `:::` syntax       | ✅      |
+| Process links              | External link icons      | ✅      |
+| Follow Obsidian theme      | Adapt to Obsidian colors | ✅      |
+| Custom primary color       | Brand color override     | #3451b2 |
 
 ## License
 
