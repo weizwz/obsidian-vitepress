@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
         },
       },
       // 开发模式输出到 dist/，避免 watch 冲突；生产构建到根目录
-      outDir: isDev ? 'dist' : '.',
+      outDir: 'dist',
       emptyOutDir: false,
       sourcemap: 'inline',
       minify: false,
