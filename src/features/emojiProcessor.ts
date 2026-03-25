@@ -1,15 +1,10 @@
 import { App, MarkdownPostProcessorContext } from 'obsidian';
 import emojiData from '../data/emoji';
 
-interface EmojiReplacement {
-  element: HTMLElement;
-  originalText: string;
-}
-
 /**
  * Emoji processor for VitePress-style emoji shortcodes
  * Converts :shortcode: to Unicode emoji characters
- * - Only works in preview mode (not source/edit mode)
+ * - Only works in preview mode (not source/edit/live-preview mode)
  * - Shows source on hover in preview mode
  * - Never converts emoji in code blocks
  */
@@ -17,7 +12,6 @@ export class EmojiProcessor {
   private app: App;
   private emojiMap: Map<string, string>;
   private regex: RegExp;
-  private replacements: WeakMap<HTMLElement, EmojiReplacement> = new WeakMap();
 
   constructor(app: App) {
     this.app = app;
@@ -30,8 +24,9 @@ export class EmojiProcessor {
    * Called by MarkdownPostProcessor for each block
    */
   processEmoji(el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
-    // Skip if in source/edit mode
-    if (this.isSourceMode(el)) {
+    // STRICT CHECK: Skip if in ANY source/edit/live-preview mode
+    // Live Preview mode uses cm-editor, so we detect it here
+    if (this.isInSourceMode()) {
       return;
     }
 
@@ -44,19 +39,26 @@ export class EmojiProcessor {
   }
 
   /**
-   * Check if we're in source/edit mode
+   * Check if we're in source/edit/live-preview mode
+   * Live Preview also uses cm-editor, so this catches it
    */
-  private isSourceMode(el: HTMLElement): boolean {
-    // Check if element is inside a source view (cm-editor)
-    let parent: HTMLElement | null = el;
-    while (parent) {
-      if (parent.classList?.contains('cm-editor') || 
-          parent.classList?.contains('markdown-source-view') ||
-          parent.getAttribute('contenteditable') === 'true') {
-        return true;
-      }
-      parent = parent.parentElement;
+  private isInSourceMode(): boolean {
+    // Check if there's a cm-editor in the active view
+    const activeView = document.querySelector('.workspace-leaf.mod-active');
+    if (!activeView) return false;
+
+    // If cm-editor exists in active view, we're in source/live-preview mode
+    const cmEditor = activeView.querySelector('.cm-editor');
+    if (cmEditor) {
+      return true;
     }
+
+    // Also check for markdown-source-view class
+    const sourceView = activeView.querySelector('.markdown-source-view');
+    if (sourceView) {
+      return true;
+    }
+
     return false;
   }
 

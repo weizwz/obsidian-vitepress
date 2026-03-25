@@ -336,13 +336,29 @@ export default class VitePressThemePlugin extends Plugin {
       }
 
       /* Source mode - always show source, never emoji */
-      .markdown-source-view .vp-emoji,
-      .cm-editor .vp-emoji {
+      /* Higher specificity for CodeMirror */
+      body .cm-editor .vp-emoji,
+      body .markdown-source-view .vp-emoji,
+      .cm-content .vp-emoji,
+      .cm-line .vp-emoji {
         display: none !important;
       }
 
-      .markdown-source-view .vp-emoji-source,
-      .cm-editor .vp-emoji-source {
+      body .cm-editor .vp-emoji-source,
+      body .markdown-source-view .vp-emoji-source,
+      .cm-content .vp-emoji-source,
+      .cm-line .vp-emoji-source {
+        display: inline !important;
+      }
+      
+      /* Ensure code blocks never show emoji */
+      pre .vp-emoji,
+      code .vp-emoji {
+        display: none !important;
+      }
+      
+      pre .vp-emoji-source,
+      code .vp-emoji-source {
         display: inline !important;
       }
     `;
