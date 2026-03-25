@@ -1,0 +1,116 @@
+/* VitePress Custom Containers */
+
+/* Base container styles */
+.vp-container {
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vp-container-title {
+  font-weight: 600;
+  font-size: 1.05em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.vp-container p:first-child {
+  margin-top: 0;
+}
+
+.vp-container p:last-child {
+  margin-bottom: 0;
+}
+
+/* Tip Container - Green */
+.vp-container.vp-tip {
+  background-color: var(--vp-c-tip-soft);
+  border-color: var(--vp-c-tip-1);
+}
+
+.vp-container.vp-tip .vp-container-title {
+  color: var(--vp-c-tip-1);
+}
+
+/* Warning Container - Yellow */
+.vp-container.vp-warning {
+  background-color: var(--vp-c-warning-soft);
+  border-color: var(--vp-c-warning-1);
+}
+
+.vp-container.vp-warning .vp-container-title {
+  color: var(--vp-c-warning-1);
+}
+
+/* Danger Container - Red */
+.vp-container.vp-danger {
+  background-color: var(--vp-c-danger-soft);
+  border-color: var(--vp-c-danger-1);
+}
+
+.vp-container.vp-danger .vp-container-title {
+  color: var(--vp-c-danger-1);
+}
+
+/* Info Container - Brand color */
+.vp-container.vp-info {
+  background-color: var(--vp-c-info-soft);
+  border-color: var(--vp-c-info-1);
+}
+
+.vp-container.vp-info .vp-container-title {
+  color: var(--vp-c-info-1);
+}
+
+/* Details/Summary Container */
+.vp-details {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  margin: 16px 0;
+  background: var(--vp-c-bg-soft);
+}
+
+.vp-details-summary {
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s;
+}
+
+.vp-details-summary:hover {
+  background-color: var(--vp-c-bg);
+}
+
+.vp-details-summary::after {
+  content: '▶';
+  font-size: 0.8em;
+  color: var(--vp-c-text-3);
+  transition: transform 0.2s;
+}
+
+.vp-details[open] .vp-details-summary::after {
+  transform: rotate(90deg);
+}
+
+.vp-details-content {
+  padding: 12px 16px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-details-content > *:first-child {
+  margin-top: 0;
+}
+
+.vp-details-content > *:last-child {
+  margin-bottom: 0;
+}

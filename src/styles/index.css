@@ -1,0 +1,22 @@
+/* VitePress Theme for Obsidian - Main Stylesheet */
+
+/* Base */
+@import 'base/_variables.css';
+@import 'base/_typography.css';
+@import 'base/_layout.css';
+
+/* Components */
+@import 'components/_containers.css';
+@import 'components/_code.css';
+@import 'components/_table.css';
+@import 'components/_callout.css';
+
+/* Ensure theme class is applied to preview */
+.markdown-preview-view {
+  container-type: inline-size;
+}
+
+/* Enable smooth scrolling */
+.vitepress-theme {
+  scroll-behavior: smooth;
+}

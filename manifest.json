@@ -1,0 +1,11 @@
+{
+  "id": "vitepress-theme",
+  "name": "VitePress Theme",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography",
+  "author": "",
+  "authorUrl": "",
+  "fundingUrl": "",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,47 @@
+/* VitePress Table Styles */
+
+.vitepress-theme .markdown-preview-view table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+  display: block;
+  overflow-x: auto;
+}
+
+.vitepress-theme .markdown-preview-view thead {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vitepress-theme .markdown-preview-view th {
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--vp-c-border);
+  color: var(--vp-c-text-1);
+  font-size: 0.95em;
+}
+
+.vitepress-theme .markdown-preview-view td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text-2);
+}
+
+.vitepress-theme .markdown-preview-view tbody tr:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vitepress-theme .markdown-preview-view tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Striped rows option */
+.vitepress-theme .markdown-preview-view table.vp-table-striped tbody tr:nth-child(odd) {
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* Code inside tables */
+.vitepress-theme .markdown-preview-view table code {
+  font-size: 0.85em;
+}

@@ -1,0 +1,167 @@
+import { App } from 'obsidian';
+import type VitePressThemePlugin from '../main';
+
+/**
+ * Enhances code blocks with VitePress-style features
+ * - Copy button
+ * - Line numbers
+ * - Code groups
+ * - Language labels
+ */
+export class CodeEnhancer {
+  private plugin: VitePressThemePlugin;
+  private app: App;
+
+  constructor(plugin: VitePressThemePlugin) {
+    this.plugin = plugin;
+    this.app = plugin.app;
+  }
+
+  /**
+   * Post-processor to enhance code blocks
+   */
+  enhanceCodeBlocks = (el: HTMLElement): void => {
+    if (!this.plugin.settings.enableCodeBlocks) return;
+
+    const codeBlocks = el.querySelectorAll('pre:not(.vp-code-block pre)');
+    codeBlocks.forEach((pre) => this.enhanceSingleBlock(pre as HTMLElement));
+
+    // Group adjacent code blocks into code groups if they have tabs
+    this.processCodeGroups(el);
+  };
+
+  /**
+   * Enhance a single code block
+   */
+  private enhanceSingleBlock(pre: HTMLElement): void {
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    // Get language from class
+    const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+    const lang = langClass ? langClass.replace('language-', '') : '';
+
+    // Create wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'vp-code-block';
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'vp-code-block-header';
+
+    // Language label
+    if (lang) {
+      const langLabel = document.createElement('span');
+      langLabel.className = 'vp-code-lang';
+      langLabel.textContent = lang;
+      header.appendChild(langLabel);
+    }
+
+    // Copy button
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'vp-code-copy-btn';
+    copyBtn.textContent = 'Copy';
+    copyBtn.addEventListener('click', () => this.copyCode(code, copyBtn));
+    header.appendChild(copyBtn);
+
+    wrapper.appendChild(header);
+
+    // Move pre into wrapper
+    pre.parentElement?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    // Add language-specific styling
+    if (lang) {
+      wrapper.dataset.language = lang;
+    }
+  }
+
+  /**
+   * Copy code to clipboard
+   */
+  private async copyCode(code: HTMLElement, button: HTMLButtonElement): Promise<void> {
+    const text = code.textContent || '';
+
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = 'Copied!';
+      button.classList.add('copied');
+
+      setTimeout(() => {
+        button.textContent = 'Copy';
+        button.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      button.textContent = 'Failed';
+      setTimeout(() => {
+        button.textContent = 'Copy';
+      }, 2000);
+    }
+  }
+
+  /**
+   * Process code groups (::: code-group)
+   */
+  private processCodeGroups(el: HTMLElement): void {
+    // Find code group containers
+    const groups = el.querySelectorAll('.vp-code-group');
+
+    groups.forEach(group => {
+      const tabs = group.querySelectorAll('.vp-code-group-tab');
+      const blocks = group.querySelectorAll('.vp-code-block');
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          // Deactivate all
+          tabs.forEach(t => t.classList.remove('active'));
+          blocks.forEach(b => b.classList.remove('active'));
+
+          // Activate clicked
+          tab.classList.add('active');
+          blocks[index]?.classList.add('active');
+        });
+      });
+
+      // Activate first tab by default
+      if (tabs.length > 0) {
+        tabs[0].classList.add('active');
+        blocks[0]?.classList.add('active');
+      }
+    });
+  }
+
+  /**
+   * Add line numbers to a code block
+   */
+  addLineNumbers(pre: HTMLElement): void {
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    const lines = code.innerHTML.split('\n');
+    if (lines.length <= 1) return;
+
+    // Remove trailing empty line
+    if (lines[lines.length - 1] === '') {
+      lines.pop();
+    }
+
+    // Create line number container
+    const lineNumbers = document.createElement('div');
+    lineNumbers.className = 'vp-line-numbers';
+
+    lines.forEach((_, index) => {
+      const num = document.createElement('span');
+      num.className = 'vp-line-number';
+      num.textContent = String(index + 1);
+      lineNumbers.appendChild(num);
+    });
+
+    const wrapper = pre.closest('.vp-code-block') as HTMLElement;
+    if (wrapper) {
+      wrapper.classList.add('has-line-numbers');
+      wrapper.style.position = 'relative';
+      wrapper.insertBefore(lineNumbers, pre);
+    }
+  }
+}

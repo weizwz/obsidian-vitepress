@@ -1,0 +1,98 @@
+/* Obsidian Callout VitePress Style Override */
+
+/* Make Obsidian callouts look like VitePress containers */
+.vitepress-theme .callout {
+  border-radius: 8px;
+  border-left-width: 4px;
+  background-color: var(--vp-c-bg-soft);
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+
+.vitepress-theme .callout-title {
+  font-weight: 600;
+  font-size: 1.05em;
+  gap: 8px;
+}
+
+.vitepress-theme .callout-icon {
+  display: flex;
+  align-items: center;
+}
+
+.vitepress-theme .callout-content {
+  color: var(--vp-c-text-2);
+}
+
+.vitepress-theme .callout-content > *:first-child {
+  margin-top: 8px;
+}
+
+/* Tip callout - Green */
+.vitepress-theme .callout[data-callout="tip"],
+.vitepress-theme .callout[data-callout="hint"],
+.vitepress-theme .callout[data-callout="important"] {
+  background-color: var(--vp-c-tip-soft);
+  border-color: var(--vp-c-tip-1);
+}
+
+.vitepress-theme .callout[data-callout="tip"] .callout-title,
+.vitepress-theme .callout[data-callout="hint"] .callout-title,
+.vitepress-theme .callout[data-callout="important"] .callout-title {
+  color: var(--vp-c-tip-1);
+}
+
+/* Warning callout - Yellow */
+.vitepress-theme .callout[data-callout="warning"],
+.vitepress-theme .callout[data-callout="caution"],
+.vitepress-theme .callout[data-callout="attention"] {
+  background-color: var(--vp-c-warning-soft);
+  border-color: var(--vp-c-warning-1);
+}
+
+.vitepress-theme .callout[data-callout="warning"] .callout-title,
+.vitepress-theme .callout[data-callout="caution"] .callout-title {
+  color: var(--vp-c-warning-1);
+}
+
+/* Danger/Error callout - Red */
+.vitepress-theme .callout[data-callout="danger"],
+.vitepress-theme .callout[data-callout="error"] {
+  background-color: var(--vp-c-danger-soft);
+  border-color: var(--vp-c-danger-1);
+}
+
+.vitepress-theme .callout[data-callout="danger"] .callout-title,
+.vitepress-theme .callout[data-callout="error"] .callout-title {
+  color: var(--vp-c-danger-1);
+}
+
+/* Info/Note callout - Brand color */
+.vitepress-theme .callout[data-callout="info"],
+.vitepress-theme .callout[data-callout="note"] {
+  background-color: var(--vp-c-info-soft);
+  border-color: var(--vp-c-info-1);
+}
+
+.vitepress-theme .callout[data-callout="info"] .callout-title,
+.vitepress-theme .callout[data-callout="note"] .callout-title {
+  color: var(--vp-c-info-1);
+}
+
+/* Summary/Example callout */
+.vitepress-theme .callout[data-callout="summary"],
+.vitepress-theme .callout[data-callout="example"] {
+  background-color: var(--vp-c-bg-soft);
+  border-color: var(--vp-c-text-3);
+}
+
+/* Quote callout */
+.vitepress-theme .callout[data-callout="quote"],
+.vitepress-theme .callout[data-callout="cite"] {
+  background-color: transparent;
+  border-left: 4px solid var(--vp-c-border);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+}

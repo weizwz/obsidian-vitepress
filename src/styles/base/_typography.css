@@ -1,0 +1,95 @@
+/* VitePress Typography Styles */
+
+.vitepress-theme .markdown-preview-view {
+  font-family: var(--vp-font-family-base);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--vp-c-text-1);
+}
+
+/* Headings */
+.vitepress-theme .markdown-preview-view h1,
+.vitepress-theme .markdown-preview-view h2,
+.vitepress-theme .markdown-preview-view h3,
+.vitepress-theme .markdown-preview-view h4,
+.vitepress-theme .markdown-preview-view h5,
+.vitepress-theme .markdown-preview-view h6 {
+  font-family: var(--vp-font-family-base);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--vp-c-text-1);
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.vitepress-theme .markdown-preview-view h1 {
+  font-size: 2.2rem;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.vitepress-theme .markdown-preview-view h2 {
+  font-size: 1.65rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 12px;
+  margin-top: 36px;
+}
+
+.vitepress-theme .markdown-preview-view h3 {
+  font-size: 1.35rem;
+}
+
+.vitepress-theme .markdown-preview-view h4 {
+  font-size: 1.15rem;
+}
+
+/* Paragraphs */
+.vitepress-theme .markdown-preview-view p {
+  margin: 16px 0;
+}
+
+/* Links */
+.vitepress-theme .markdown-preview-view a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.vitepress-theme .markdown-preview-view a:hover {
+  color: var(--vp-c-brand-2);
+  border-bottom-color: var(--vp-c-brand-2);
+}
+
+/* Lists */
+.vitepress-theme .markdown-preview-view ul,
+.vitepress-theme .markdown-preview-view ol {
+  padding-left: 1.25rem;
+  margin: 16px 0;
+}
+
+.vitepress-theme .markdown-preview-view li {
+  margin: 8px 0;
+}
+
+.vitepress-theme .markdown-preview-view li::marker {
+  color: var(--vp-c-text-3);
+}
+
+/* Blockquotes */
+.vitepress-theme .markdown-preview-view blockquote {
+  border-left: 4px solid var(--vp-c-border);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--vp-c-text-2);
+}
+
+/* Horizontal Rule */
+.vitepress-theme .markdown-preview-view hr {
+  border: none;
+  border-top: 1px solid var(--vp-c-divider);
+  margin: 24px 0;
+}
