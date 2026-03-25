@@ -4,12 +4,14 @@ import { VitePressSettings, DEFAULT_SETTINGS } from './types/settings';
 import { ContainerParser } from './features/containerParser';
 import { CodeEnhancer } from './features/codeEnhancer';
 import { LinkProcessor } from './features/linkProcessor';
+import { EmojiProcessor } from './features/emojiProcessor';
 
 export default class VitePressThemePlugin extends Plugin {
   settings: VitePressSettings;
   private containerParser: ContainerParser;
   private codeEnhancer: CodeEnhancer;
   private linkProcessor: LinkProcessor;
+  private emojiProcessor: EmojiProcessor;
   private styleElement: HTMLStyleElement | null = null;
 
   async onload() {
@@ -19,6 +21,7 @@ export default class VitePressThemePlugin extends Plugin {
     this.containerParser = new ContainerParser(this);
     this.codeEnhancer = new CodeEnhancer(this);
     this.linkProcessor = new LinkProcessor(this);
+    this.emojiProcessor = new EmojiProcessor(this.app);
 
     // Add settings tab
     this.addSettingTab(new VitePressSettingTab(this.app, this));
@@ -31,6 +34,7 @@ export default class VitePressThemePlugin extends Plugin {
       this.containerParser.processContainer(el, ctx);
       this.codeEnhancer.enhanceCodeBlocks(el);
       this.linkProcessor.processLinks(el, ctx);
+      this.emojiProcessor.processEmoji(el, ctx);
     });
 
     // Add theme class to body
@@ -103,6 +107,7 @@ export default class VitePressThemePlugin extends Plugin {
     // Always apply table and callout styles
     css += this.getTableStyles();
     css += this.getCalloutStyles();
+    css += this.getEmojiStyles();
 
     this.styleElement.textContent = css;
     document.head.appendChild(this.styleElement);
@@ -286,6 +291,59 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .callout[data-callout="danger"] {
         background: rgba(244, 63, 94, 0.1);
         border-color: #f43f5e;
+      }
+    `;
+  }
+
+  /**
+   * Get emoji styles with hover effect
+   */
+  private getEmojiStyles(): string {
+    return `
+      .vp-emoji-container {
+        display: inline;
+      }
+
+      .vp-emoji-wrapper {
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .vp-emoji {
+        font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+        font-style: normal;
+      }
+
+      .vp-emoji-source {
+        display: none;
+        font-family: var(--font-monospace);
+        font-size: 0.9em;
+        color: var(--text-muted);
+        background: var(--background-secondary);
+        padding: 2px 4px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+
+      /* Show source on hover */
+      .vp-emoji-wrapper:hover .vp-emoji {
+        display: none;
+      }
+
+      .vp-emoji-wrapper:hover .vp-emoji-source {
+        display: inline;
+      }
+
+      /* Source mode - always show source, never emoji */
+      .markdown-source-view .vp-emoji,
+      .cm-editor .vp-emoji {
+        display: none !important;
+      }
+
+      .markdown-source-view .vp-emoji-source,
+      .cm-editor .vp-emoji-source {
+        display: inline !important;
       }
     `;
   }
