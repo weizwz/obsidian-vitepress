@@ -5,6 +5,7 @@ import { ContainerParser } from './features/containerParser';
 import { CodeEnhancer } from './features/codeEnhancer';
 import { LinkProcessor } from './features/linkProcessor';
 import { EmojiProcessor } from './features/emojiProcessor';
+import { BadgeProcessor } from './features/badgeProcessor';
 
 export default class VitePressThemePlugin extends Plugin {
   settings: VitePressSettings;
@@ -12,6 +13,7 @@ export default class VitePressThemePlugin extends Plugin {
   private codeEnhancer: CodeEnhancer;
   private linkProcessor: LinkProcessor;
   private emojiProcessor: EmojiProcessor;
+  private badgeProcessor: BadgeProcessor;
   private styleElement: HTMLStyleElement | null = null;
 
   async onload() {
@@ -22,6 +24,7 @@ export default class VitePressThemePlugin extends Plugin {
     this.codeEnhancer = new CodeEnhancer(this);
     this.linkProcessor = new LinkProcessor(this);
     this.emojiProcessor = new EmojiProcessor(this.app);
+    this.badgeProcessor = new BadgeProcessor(this.app);
 
     // Add settings tab
     this.addSettingTab(new VitePressSettingTab(this.app, this));
@@ -35,6 +38,7 @@ export default class VitePressThemePlugin extends Plugin {
       this.codeEnhancer.enhanceCodeBlocks(el);
       this.linkProcessor.processLinks(el, ctx);
       this.emojiProcessor.processEmoji(el, ctx);
+      this.badgeProcessor.processBadges(el, ctx);
     });
 
     // Add theme class to body
@@ -108,6 +112,7 @@ export default class VitePressThemePlugin extends Plugin {
     css += this.getTableStyles();
     css += this.getCalloutStyles();
     css += this.getEmojiStyles();
+    css += this.getBadgeStyles();
 
     this.styleElement.textContent = css;
     document.head.appendChild(this.styleElement);
@@ -360,6 +365,52 @@ export default class VitePressThemePlugin extends Plugin {
       pre .vp-emoji-source,
       code .vp-emoji-source {
         display: inline !important;
+      }
+    `;
+  }
+
+  /**
+   * Get badge styles
+   */
+  private getBadgeStyles(): string {
+    return `
+      .vp-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: 500;
+        margin: 0 4px;
+        border: 1px solid;
+      }
+
+      /* info - blue (default) */
+      .vp-badge-info,
+      .vp-badge-default {
+        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+
+      /* tip - green */
+      .vp-badge-tip {
+        color: #42b883;
+        background: rgba(66, 184, 131, 0.1);
+        border-color: #42b883;
+      }
+
+      /* warning - yellow/orange */
+      .vp-badge-warning {
+        color: #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+        border-color: #f59e0b;
+      }
+
+      /* danger - red */
+      .vp-badge-danger {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border-color: #ef4444;
       }
     `;
   }
