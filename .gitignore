@@ -8,6 +8,8 @@ pnpm-lock.yaml
 main.js
 styles.css
 *.map
+dist/
+
 
 # Development
 .env
