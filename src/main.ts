@@ -178,36 +178,31 @@ export default class VitePressThemePlugin extends Plugin {
       .vp-container {
         border-radius: 8px;
         padding: 16px 20px;
-        margin: 16px 0;
+        margin: 1em 0;
         border-left: 4px solid;
         background: var(--background-secondary-alt);
       }
 
       .vp-container-header {
+        padding: var(--callout-title-padding);
         display: flex;
+        gap: var(--size-4-1);
+        font-size: var(--callout-title-size);
+        color: rgb(var(--callout-color));
         align-items: center;
-        gap: 8px;
         margin-bottom: 12px;
-        font-weight: 600;
-        font-size: 0.95em;
       }
 
       .vp-container-icon {
-        display: inline-flex;
+        flex: 0 0 auto;
+        display: flex;
         align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-      }
-
-      .vp-container-icon svg {
-        width: 100%;
-        height: 100%;
       }
 
       .vp-container-title-text {
         color: inherit;
+        --font-weight: var(--callout-title-weight);
+        font-weight: var(--font-weight);
       }
 
       .vp-container-content {
@@ -354,7 +349,21 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .callout {
         border-radius: 8px;
         border-left: solid 4px;
+        padding: 16px 20px;
       }
+      .vitepress-theme .callout-title {
+        margin-bottom: 12px;
+      }
+      .vitepress-theme .callout-content > *:first-child {
+        margin-top: 0;
+      }
+      .vitepress-theme .callout-content > *:last-child {
+        margin-bottom: 0;
+      }
+      .vitepress-theme .callout-content p {
+        margin: 0.5em 0;
+      }
+
       .vitepress-theme .callout[data-callout="note"],
       .vitepress-theme .callout[data-callout="info"] {
         background: rgba(var(--callout-info), 0.1);
@@ -370,6 +379,10 @@ export default class VitePressThemePlugin extends Plugin {
         background: rgba(var(--callout-example), 0.1);
         border-color: rgba(var(--callout-example), var(--callout-border-opacity));
       }
+      .vitepress-theme .callout[data-callout="important"] .callout-title,
+      .vitepress-theme .callout[data-callout="important"] .svg-icon {
+        color: rgb(var(--callout-example));
+      }
 
       .vitepress-theme .callout[data-callout="warning"] {
         background: rgba(var(--callout-warning), 0.1);
@@ -380,6 +393,10 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .callout[data-callout="caution"] {
         background: rgba(var(--callout-error), 0.1);
         border-color: rgba(var(--callout-error), var(--callout-border-opacity));
+      }
+      .vitepress-theme .callout[data-callout="caution"] .callout-title,
+      .vitepress-theme .callout[data-callout="caution"] .svg-icon {
+        color: rgb(var(--callout-error));
       }
     `;
   }
