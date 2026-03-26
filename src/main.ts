@@ -170,36 +170,114 @@ export default class VitePressThemePlugin extends Plugin {
   }
 
   /**
-   * Get container styles
+   * Get VitePress container styles (GitHub-style)
    */
   private getContainerStyles(): string {
     return `
+      /* VitePress Custom Containers - GitHub Alert Style */
       .vp-container {
         border-radius: 8px;
         padding: 16px 20px;
         margin: 16px 0;
-        border-left: 4px solid transparent;
-        background: var(--background-secondary);
+        border-left: 4px solid;
+        background: var(--background-secondary-alt);
+      }
+
+      .vp-container-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 0.95em;
+      }
+
+      .vp-container-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+
+      .vp-container-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .vp-container-title-text {
+        color: inherit;
+      }
+
+      .vp-container-content {
+        color: var(--text-normal);
+        line-height: 1.6;
+      }
+
+      .vp-container-content > *:first-child {
+        margin-top: 0;
+      }
+
+      .vp-container-content > *:last-child {
+        margin-bottom: 0;
+      }
+
+      .vp-container-content p {
+        margin: 0.5em 0;
+      }
+
+      .vp-container-content p:first-child {
+        margin-top: 0;
+      }
+
+      .vp-container-content p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* 
+       * VitePress -> GitHub mapping:
+       * ::: info    -> [!NOTE]     蓝色  var(--callout-info)
+       * ::: tip     -> [!TIP]      绿色  var(--callout-tip)
+       * ::: warning -> [!WARNING]  黄色  var(--callout-warning)
+       * ::: danger  -> [!CAUTION]  红色  var(--callout-error)
+       */
+
+      /*
+       * GitHub Alert Style Colors
+       * Source: https://github.com/orgs/community/discussions/16925
+       */
+
+      .vp-container.vp-info {
+        background: rgba(var(--callout-info), 0.1);
+        border-color: rgba(var(--callout-info), var(--callout-border-opacity));
+      }
+      .vp-container.vp-info .vp-container-header {
+        color: rgb(var(--callout-info));
       }
 
       .vp-container.vp-tip {
-        background: rgba(66, 184, 131, 0.1);
-        border-color: #42b883;
+        background: rgba(var(--callout-tip), 0.1);
+        border-color: rgba(var(--callout-tip), var(--callout-border-opacity));
+      }
+      .vp-container.vp-tip .vp-container-header {
+        color: rgb(var(--callout-tip));
       }
 
       .vp-container.vp-warning {
-        background: rgba(234, 179, 8, 0.1);
-        border-color: #eab308;
+        background: rgba(var(--callout-warning), 0.1);
+        border-color: rgba(var(--callout-warning), var(--callout-border-opacity));
+      }
+      .vp-container.vp-warning .vp-container-header {
+        color: rgb(var(--callout-warning));
       }
 
       .vp-container.vp-danger {
-        background: rgba(244, 63, 94, 0.1);
-        border-color: #f43f5e;
+        background: rgba(var(--callout-error), 0.1);
+        border-color: rgba(var(--callout-error), var(--callout-border-opacity));
       }
-
-      .vp-container-title {
-        font-weight: 600;
-        margin-bottom: 8px;
+      .vp-container.vp-danger .vp-container-header {
+        color: rgb(var(--callout-error));
       }
     `;
   }
@@ -275,22 +353,33 @@ export default class VitePressThemePlugin extends Plugin {
     return `
       .vitepress-theme .callout {
         border-radius: 8px;
-        border-left-width: 4px;
+        border-left: solid 4px;
+      }
+      .vitepress-theme .callout[data-callout="note"],
+      .vitepress-theme .callout[data-callout="info"] {
+        background: rgba(var(--callout-info), 0.1);
+        border-color: rgba(var(--callout-info), var(--callout-border-opacity));
       }
 
       .vitepress-theme .callout[data-callout="tip"] {
-        background: rgba(66, 184, 131, 0.1);
-        border-color: #42b883;
+        background: rgba(var(--callout-tip), 0.1);
+        border-color: rgba(var(--callout-tip), var(--callout-border-opacity));
+      }
+
+      .vitepress-theme .callout[data-callout="important"] {
+        background: rgba(var(--callout-example), 0.1);
+        border-color: rgba(var(--callout-example), var(--callout-border-opacity));
       }
 
       .vitepress-theme .callout[data-callout="warning"] {
-        background: rgba(234, 179, 8, 0.1);
-        border-color: #eab308;
+        background: rgba(var(--callout-warning), 0.1);
+        border-color: rgba(var(--callout-warning), var(--callout-border-opacity));
       }
 
-      .vitepress-theme .callout[data-callout="danger"] {
-        background: rgba(244, 63, 94, 0.1);
-        border-color: #f43f5e;
+      .vitepress-theme .callout[data-callout="danger"],
+      .vitepress-theme .callout[data-callout="caution"] {
+        background: rgba(var(--callout-error), 0.1);
+        border-color: rgba(var(--callout-error), var(--callout-border-opacity));
       }
     `;
   }
