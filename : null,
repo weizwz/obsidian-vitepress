@@ -1,0 +1,31 @@
+# Badge Processing Fix Plan
+
+## Current Bug
+- Code block detection is not working correctly
+- Badges inside code blocks ARE being processed (should NOT be)
+- Badges in main text are NOT being processed (should BE)
+
+## Root Cause
+The isInsideCodeBlock() check is either:
+1. Not being called at all
+2. Being called on the wrong element
+3. The logic is inverted
+
+## Fix Strategy
+1. Check if code element is inside a PRE (fenced code block) - if so, SKIP
+2. Check if code element has certain class patterns - if so, SKIP
+3. Only process inline code elements that are NOT in code blocks
+
+## Critical Fix
+When we find a `<code>` element, we need to check if it's inside:
+- `<pre>` element (fenced code block) - SKIP
+- `.HyperMD-codeblock` class - SKIP
+- `.el-pre` class - SKIP
+
+Only process if it's truly inline code in regular text.
+
+## Code Changes Needed
+In badgeProcessor.ts:
+1. Fix isInsideCodeBlock to properly detect fenced code blocks
+2. Only process code elements that are NOT inside fenced blocks
+3. Process text nodes in paragraphs (not in code blocks)
