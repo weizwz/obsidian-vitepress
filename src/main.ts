@@ -102,6 +102,7 @@ export default class VitePressThemePlugin extends Plugin {
 
     if (this.settings.enableCodeBlocks) {
       css += this.getCodeBlockStyles();
+      css += this.getCodeGroupStyles();
     }
 
     // Always apply table and callout styles
@@ -141,6 +142,13 @@ export default class VitePressThemePlugin extends Plugin {
         line-height: 1.7;
       }
 
+      .vitepress-theme .metadata-content {
+        background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.05);
+        border: solid 1px hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.1);
+        border-radius: 8px;
+        padding: 8px;
+      }
+
       .vitepress-theme .markdown-preview-view h1 {
         font-size: 2.2rem;
         border-bottom: 1px solid var(--divider-color);
@@ -150,7 +158,7 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .markdown-preview-view h2 {
         font-size: 1.65rem;
         border-bottom: 1px solid var(--divider-color);
-        padding-bottom: 12px;
+        padding: 12px 0;
       }
 
       .vitepress-theme .markdown-preview-view h3 {
@@ -497,6 +505,70 @@ export default class VitePressThemePlugin extends Plugin {
     `;
   }
 
+
+  /**
+   * Get code group styles
+   */
+  private getCodeGroupStyles(): string {
+    return `
+      /* Code Group - Tabbed Code Blocks */
+      .vp-code-group {
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 16px 0;
+        background: var(--code-background);
+        border: 1px solid var(--background-modifier-border);
+      }
+
+      .vp-code-group-tabs {
+        display: flex;
+        background: var(--background-secondary);
+        border-bottom: 1px solid var(--background-modifier-border);
+        padding: 8px 8px 0 8px;
+        gap: 4px;
+      }
+
+      .vp-code-group-tab {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.9em;
+        border-radius: 6px 6px 0 0;
+        transition: all 0.2s;
+      }
+
+      .vp-code-group-tab:hover {
+        color: var(--text-normal);
+        background: var(--background-modifier-hover);
+      }
+
+      .vp-code-group-tab.active {
+        color: var(--text-normal);
+        background: var(--code-background);
+        border-bottom: 2px solid var(--interactive-accent);
+      }
+
+      .vp-code-group-contents {
+        position: relative;
+      }
+
+      .vp-code-group-content {
+        display: none;
+      }
+
+      .vp-code-group-content.active {
+        display: block;
+      }
+
+      .vp-code-group-content pre {
+        margin: 0;
+        border-radius: 0;
+      }
+    `;
+  }
+
   /**
    * Log to console if debug mode is enabled
    */
@@ -506,3 +578,4 @@ export default class VitePressThemePlugin extends Plugin {
     }
   }
 }
+

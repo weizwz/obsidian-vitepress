@@ -61,10 +61,10 @@ export class ContainerParser {
 
   /**
    * Check if text is a container start
-   * VitePress syntax: ::: info|tip|warning|danger
+   * VitePress syntax: ::: info|tip|warning|danger|code-group
    */
   private isContainerStart(text: string): boolean {
-    return /^:::\s*(tip|warning|danger|info)/i.test(text.trim());
+    return /^:::\s*(tip|warning|danger|info|code-group)/i.test(text.trim());
   }
 
   /**
@@ -80,6 +80,12 @@ export class ContainerParser {
 
     const [, type, customTitle] = match;
     const typeLower = type.toLowerCase();
+
+    // Handle code-group specially
+    if (typeLower === 'code-group') {
+      this.parseCodeGroupBlock(startEl, ctx);
+      return;
+    }
 
     // Create GitHub-style container
     const containerEl = this.createContainerElement(typeLower, customTitle);
@@ -121,6 +127,12 @@ export class ContainerParser {
         const [, type, customTitle, content] = containerMatch;
         const typeLower = type.toLowerCase();
 
+        // Handle code-group specially
+        if (typeLower === 'code-group') {
+          this.parseCodeGroupFromParagraph(p);
+          return;
+        }
+
         if (!this.labelMap[typeLower]) return; // Unknown type
 
         const containerEl = this.createContainerElement(typeLower, customTitle?.trim());
@@ -142,6 +154,186 @@ export class ContainerParser {
         p.replaceWith(containerEl);
       }
     });
+  }
+
+  /**
+   * Parse code-group from paragraph format (::: code-group in <p>)
+   */
+  private parseCodeGroupFromParagraph(startP: HTMLParagraphElement): void {
+    const parentEl = startP.parentElement;
+    if (!parentEl) return;
+
+    const codeGroupEl = document.createElement('div');
+    codeGroupEl.className = 'vp-code-group';
+
+    const tabsEl = document.createElement('div');
+    tabsEl.className = 'vp-code-group-tabs';
+
+    const contentsEl = document.createElement('div');
+    contentsEl.className = 'vp-code-group-contents';
+
+    let currentEl: Element | null = startP.nextElementSibling;
+    let tabIndex = 0;
+    let activeTab = 0;
+
+    while (currentEl) {
+      // Check for closing :::
+      const text = currentEl.textContent?.trim() || '';
+      if (text === ':::' || currentEl.innerHTML === ':::') {
+        currentEl.remove();
+        break;
+      }
+
+      // Check if this is a code block
+      const preEl = currentEl.querySelector('pre');
+      const codeEl = preEl?.querySelector('code');
+
+      if (preEl && codeEl) {
+        // Extract language and filename
+        const className = codeEl.className || '';
+        const langMatch = className.match(/language-(\w+)/);
+        const lang = langMatch ? langMatch[1] : 'text';
+
+        // Extract filename from data-lang attribute
+        let filename = '';
+        const dataLang = codeEl.getAttribute('data-lang') || '';
+        const filenameMatch = dataLang.match(/\[(.+?)\]/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        } else {
+          filename = lang;
+        }
+
+        // Create tab
+        const tabEl = document.createElement('button');
+        tabEl.className = `vp-code-group-tab${tabIndex === activeTab ? ' active' : ''}`;
+        tabEl.textContent = filename;
+        tabEl.dataset.index = String(tabIndex);
+        tabEl.addEventListener('click', () => {
+          tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === parseInt(tabEl.dataset.index || '0'));
+          });
+          contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => {
+            c.classList.toggle('active', i === parseInt(tabEl.dataset.index || '0'));
+          });
+        });
+        tabsEl.appendChild(tabEl);
+
+        // Create content wrapper
+        const contentEl = document.createElement('div');
+        contentEl.className = `vp-code-group-content${tabIndex === activeTab ? ' active' : ''}`;
+        contentEl.dataset.index = String(tabIndex);
+
+        // Move the pre element into content
+        const clonedPre = preEl.cloneNode(true) as HTMLElement;
+        contentEl.appendChild(clonedPre);
+        contentsEl.appendChild(contentEl);
+
+        tabIndex++;
+
+        // Remove the original code block element
+        const toRemove = currentEl;
+        currentEl = currentEl.nextElementSibling;
+        toRemove.remove();
+      } else {
+        // Not a code block, just skip it
+        currentEl = currentEl.nextElementSibling;
+      }
+    }
+
+    // Only add if we found at least one code block
+    if (tabIndex > 0) {
+      codeGroupEl.appendChild(tabsEl);
+      codeGroupEl.appendChild(contentsEl);
+      startP.replaceWith(codeGroupEl);
+    }
+  }
+
+
+  /**
+   * Parse code-group container with tabbed code blocks
+   */
+  private parseCodeGroupBlock(startEl: HTMLElement, ctx: MarkdownPostProcessorContext): void {
+    const codeGroupEl = document.createElement('div');
+    codeGroupEl.className = 'vp-code-group';
+
+    const tabsEl = document.createElement('div');
+    tabsEl.className = 'vp-code-group-tabs';
+
+    const contentsEl = document.createElement('div');
+    contentsEl.className = 'vp-code-group-contents';
+
+    let currentEl: HTMLElement | null = startEl.parentElement?.nextElementSibling as HTMLElement;
+    let tabIndex = 0;
+    let activeTab = 0;
+
+    while (currentEl) {
+      // Check for closing :::
+      const code = currentEl.querySelector('pre > code');
+      if (code && code.textContent?.trim() === ':::') {
+        currentEl.remove();
+        break;
+      }
+
+      // Check if this is a code block
+      const preEl = currentEl.querySelector('pre');
+      const codeEl = preEl?.querySelector('code');
+
+      if (preEl && codeEl) {
+        // Extract language and filename from code class and content
+        const className = codeEl.className || '';
+        const langMatch = className.match(/language-(\w+)/);
+        const lang = langMatch ? langMatch[1] : 'text';
+
+        // Try to extract filename from code block info string
+        // In Obsidian, check data-lang attribute which contains the full info string like "ts [filename]"
+        let filename = '';
+        const dataLang = codeEl.getAttribute('data-lang') || '';
+        const filenameMatch = dataLang.match(/\[(.+?)\]/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        } else {
+          filename = lang;
+        }
+
+        // Create tab
+        const tabEl = document.createElement('button');
+        tabEl.className = `vp-code-group-tab${tabIndex === activeTab ? ' active' : ''}`;
+        tabEl.textContent = filename;
+        tabEl.dataset.index = String(tabIndex);
+        tabEl.addEventListener('click', () => {
+          // Update active states
+          tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === parseInt(tabEl.dataset.index || '0'));
+          });
+          contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => {
+            c.classList.toggle('active', i === parseInt(tabEl.dataset.index || '0'));
+          });
+        });
+        tabsEl.appendChild(tabEl);
+
+        // Create content wrapper
+        const contentEl = document.createElement('div');
+        contentEl.className = `vp-code-group-content${tabIndex === activeTab ? ' active' : ''}`;
+        contentEl.dataset.index = String(tabIndex);
+
+        // Move the pre element into content
+        const clonedPre = preEl.cloneNode(true) as HTMLElement;
+        contentEl.appendChild(clonedPre);
+        contentsEl.appendChild(contentEl);
+
+        tabIndex++;
+      }
+
+      const toRemove = currentEl;
+      currentEl = currentEl.nextElementSibling as HTMLElement;
+      toRemove.remove();
+    }
+
+    codeGroupEl.appendChild(tabsEl);
+    codeGroupEl.appendChild(contentsEl);
+
+    startEl.parentElement?.replaceWith(codeGroupEl);
   }
 
   /**
@@ -187,3 +379,4 @@ export class ContainerParser {
     `;
   }
 }
+
