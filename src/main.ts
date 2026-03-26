@@ -274,6 +274,29 @@ export default class VitePressThemePlugin extends Plugin {
       .vp-container.vp-danger .vp-container-header {
         color: rgb(var(--callout-error));
       }
+
+      /* Blockquote - styled like info container */
+      .vitepress-theme .markdown-preview-view blockquote {
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 1em 0;
+        border-left: 4px solid var(--blockquote-border-color);
+        background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.1);
+      }
+
+      .vitepress-theme .markdown-preview-view blockquote > p:first-child {
+        margin-top: 0;
+      }
+
+      .vitepress-theme .markdown-preview-view blockquote > p:last-child {
+        margin-bottom: 0;
+      }
+
+      .vitepress-theme .markdown-preview-view blockquote p {
+        color: var(--text-normal);
+        line-height: 1.6;
+        margin: 0.5em 0;
+      }
     `;
   }
 
