@@ -301,27 +301,24 @@ export default class VitePressThemePlugin extends Plugin {
   }
 
   /**
-   * Get emoji styles with hover effect
+   * Get emoji styles - dual display with CSS control
    */
   private getEmojiStyles(): string {
     return `
-      .vp-emoji-container {
-        display: inline;
-      }
-
+      /* Base emoji wrapper */
       .vp-emoji-wrapper {
-        display: inline-block;
+        display: inline;
         position: relative;
-        cursor: pointer;
       }
 
-      .vp-emoji {
+      /* Emoji display (shown in preview) */
+      .vp-emoji-display {
         font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
         font-style: normal;
       }
 
+      /* Source display (shown in editor) */
       .vp-emoji-source {
-        display: none;
         font-family: var(--font-monospace);
         font-size: 0.9em;
         color: var(--text-muted);
@@ -331,39 +328,46 @@ export default class VitePressThemePlugin extends Plugin {
         white-space: nowrap;
       }
 
-      /* Show source on hover */
-      .vp-emoji-wrapper:hover .vp-emoji {
-        display: none;
-      }
+      /* 
+       * MODE-SPECIFIC DISPLAY CONTROL
+       * =============================
+       */
 
-      .vp-emoji-wrapper:hover .vp-emoji-source {
-        display: inline;
-      }
-
-      /* Source mode - always show source, never emoji */
-      /* Higher specificity for CodeMirror */
-      body .cm-editor .vp-emoji,
-      body .markdown-source-view .vp-emoji,
-      .cm-content .vp-emoji,
-      .cm-line .vp-emoji {
-        display: none !important;
-      }
-
-      body .cm-editor .vp-emoji-source,
-      body .markdown-source-view .vp-emoji-source,
-      .cm-content .vp-emoji-source,
-      .cm-line .vp-emoji-source {
+      /* READING MODE (full preview): Show emoji, hide source */
+      .markdown-preview-view .vp-emoji-display {
         display: inline !important;
       }
-      
-      /* Ensure code blocks never show emoji */
-      pre .vp-emoji,
-      code .vp-emoji {
+      .markdown-preview-view .vp-emoji-source {
         display: none !important;
       }
-      
+
+      /* Hover in reading mode: Show source */
+      .markdown-preview-view .vp-emoji-wrapper:hover .vp-emoji-display {
+        display: none !important;
+      }
+      .markdown-preview-view .vp-emoji-wrapper:hover .vp-emoji-source {
+        display: inline !important;
+      }
+
+      /* EDITOR MODES (source + live preview): Always show source, never emoji */
+      .cm-editor .vp-emoji-display,
+      .markdown-source-view .vp-emoji-display {
+        display: none !important;
+      }
+      .cm-editor .vp-emoji-source,
+      .markdown-source-view .vp-emoji-source {
+        display: inline !important;
+      }
+
+      /* CODE BLOCKS: Always show source */
+      pre .vp-emoji-display,
+      code .vp-emoji-display,
+      .HyperMD-codeblock .vp-emoji-display {
+        display: none !important;
+      }
       pre .vp-emoji-source,
-      code .vp-emoji-source {
+      code .vp-emoji-source,
+      .HyperMD-codeblock .vp-emoji-source {
         display: inline !important;
       }
     `;

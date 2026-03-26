@@ -3,10 +3,16 @@ import emojiData from '../data/emoji';
 
 /**
  * Emoji processor for VitePress-style emoji shortcodes
- * Converts :shortcode: to Unicode emoji characters
- * - Only works in preview mode (not source/edit/live-preview mode)
- * - Shows source on hover in preview mode
- * - Never converts emoji in code blocks
+ * 
+ * Strategy:
+ * 1. Use Markdown Post-Processor for Reading Mode (full preview)
+ * 2. Use CSS to show emoji in preview, show source in editor
+ * 
+ * This ensures:
+ * - Reading Mode: displays emoji icons
+ * - Live Preview: displays :shortcode: source
+ * - Source Mode: displays :shortcode: source
+ * - NEVER modifies the original markdown file
  */
 export class EmojiProcessor {
   private app: App;
@@ -21,15 +27,9 @@ export class EmojiProcessor {
 
   /**
    * Process emoji shortcodes in the element
-   * Called by MarkdownPostProcessor for each block
+   * This runs in BOTH reading mode and live preview, but CSS controls visibility
    */
   processEmoji(el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
-    // STRICT CHECK: Skip if in ANY source/edit/live-preview mode
-    // Live Preview mode uses cm-editor, so we detect it here
-    if (this.isInSourceMode()) {
-      return;
-    }
-
     // Skip code blocks entirely
     if (this.isInsideCodeBlock(el)) {
       return;
@@ -39,37 +39,13 @@ export class EmojiProcessor {
   }
 
   /**
-   * Check if we're in source/edit/live-preview mode
-   * Live Preview also uses cm-editor, so this catches it
-   */
-  private isInSourceMode(): boolean {
-    // Check if there's a cm-editor in the active view
-    const activeView = document.querySelector('.workspace-leaf.mod-active');
-    if (!activeView) return false;
-
-    // If cm-editor exists in active view, we're in source/live-preview mode
-    const cmEditor = activeView.querySelector('.cm-editor');
-    if (cmEditor) {
-      return true;
-    }
-
-    // Also check for markdown-source-view class
-    const sourceView = activeView.querySelector('.markdown-source-view');
-    if (sourceView) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
    * Check if element is inside a code block
    */
   private isInsideCodeBlock(el: HTMLElement): boolean {
     let parent: HTMLElement | null = el;
     while (parent) {
       const tagName = parent.tagName?.toLowerCase();
-      if (tagName === 'pre' || tagName === 'code') {
+      if (tagName === 'pre' || tagName === 'code' || parent.classList?.contains('HyperMD-codeblock')) {
         return true;
       }
       parent = parent.parentElement;
@@ -79,6 +55,7 @@ export class EmojiProcessor {
 
   /**
    * Walk through all text nodes and replace emoji shortcodes
+   * Creates dual display structure: emoji + source (CSS controls which is shown)
    */
   private walkAndReplace(node: Node): void {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -95,27 +72,27 @@ export class EmojiProcessor {
         return;
       }
 
-      // Create interactive emoji container
+      // Create container with dual display
       const container = document.createElement('span');
       container.className = 'vp-emoji-container';
       
       for (const part of parts) {
         if (part.type === 'emoji') {
-          // Create emoji element with hover behavior
-          const emojiWrapper = document.createElement('span');
-          emojiWrapper.className = 'vp-emoji-wrapper';
+          // Create wrapper with both emoji and source
+          const wrapper = document.createElement('span');
+          wrapper.className = 'vp-emoji-wrapper';
           
           const emojiSpan = document.createElement('span');
-          emojiSpan.className = 'vp-emoji';
+          emojiSpan.className = 'vp-emoji-display';
           emojiSpan.textContent = part.value;
           
           const sourceSpan = document.createElement('span');
           sourceSpan.className = 'vp-emoji-source';
           sourceSpan.textContent = `:${part.shortcode}:`;
           
-          emojiWrapper.appendChild(emojiSpan);
-          emojiWrapper.appendChild(sourceSpan);
-          container.appendChild(emojiWrapper);
+          wrapper.appendChild(emojiSpan);
+          wrapper.appendChild(sourceSpan);
+          container.appendChild(wrapper);
         } else {
           container.appendChild(document.createTextNode(part.value));
         }
