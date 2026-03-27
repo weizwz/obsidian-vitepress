@@ -1,15 +1,26 @@
 {
-  "name": "obsidian-vitepress-theme",
+  "name": "obsidian-vitepress",
   "version": "1.0.0",
-  "description": "VitePress-style theme for Obsidian",
+  "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography",
+  "author": "weizwz",
+  "homepage": "https://github.com/weizwz/obsidian-vitepress",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weizwz/obsidian-vitepress.git"
+  },
+  "authorUrl": "https://github.com/weizwz",
   "main": "main.js",
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vite build",
     "lint": "tsc --noEmit"
   },
-  "keywords": ["obsidian", "plugin", "vitepress", "theme"],
-  "author": "",
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "vitepress",
+    "theme"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.0.0",

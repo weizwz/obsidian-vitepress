@@ -1,11 +1,11 @@
 {
-  "id": "vitepress-theme",
+  "id": "obsidian-vitepress",
   "name": "VitePress Theme",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
   "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography",
-  "author": "",
-  "authorUrl": "",
+  "author": "weizwz",
+  "authorUrl": "https://github.com/weizwz",
   "fundingUrl": "",
   "isDesktopOnly": false
 }
