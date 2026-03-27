@@ -318,6 +318,7 @@ export default class VitePressThemePlugin extends Plugin {
         background: var(--code-background);
         border-radius: 8px;
         overflow: hidden;
+        margin: 16px 0;
       }
 
       .vp-code-block-header {
@@ -506,6 +507,10 @@ export default class VitePressThemePlugin extends Plugin {
 
       .vp-code-group .vp-code-block-header {
         display: none;
+      }
+
+      .vp-code-group .vp-code-block {
+        margin: 0;
       }
 
       .vp-code-group-tabs {
