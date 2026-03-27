@@ -45,6 +45,18 @@ export class CodeEnhancer {
     let idx = 0
     codeBlocks.forEach((pre) => {
       const code = pre.querySelector('code')
+
+      // 跳过 Obsidian 在阅读模式下因 frontmatter (---) 生成的幽灵 yaml 代码块
+      // 有多重特征可识别：
+      // 1. pre 自身带有 .frontmatter class（Obsidian 的专属标记）
+      // 2. pre 位于 .mod-frontmatter 容器内
+      // 3. pre 被 Obsidian 设为 display:none（内容已在属性面板渲染，此 pre 只是残留）
+      if (
+        pre.classList.contains('frontmatter') ||
+        pre.closest('.mod-frontmatter') ||
+        (pre as HTMLElement).style.display === 'none'
+      ) return
+
       if (code && filenames[idx]) {
         code.setAttribute('data-filename', filenames[idx])
       }
