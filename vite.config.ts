@@ -24,28 +24,25 @@ export default defineConfig(({ mode }) => {
           exports: 'default',
         },
       },
-      // 开发模式输出到 dist/，避免 watch 冲突；生产构建到根目录
       outDir: 'dist',
       emptyOutDir: false,
-      sourcemap: 'inline',
-      minify: false,
-      // 开发模式启用 watch
-      watch: isDev ? {} : null,
+      sourcemap: isDev ? 'inline' : false,
+      minify: !isDev,
     },
     css: {
       modules: false,
     },
-    // 开发模式构建完成后复制文件到根目录
-    plugins: isDev ? [{
+    // 每次构建完成后将 main.js 复制到根目录（Obsidian 插件要求）
+    plugins: [{
       name: 'copy-to-root',
       closeBundle() {
         try {
           copyFileSync('dist/main.js', 'main.js');
-          console.log('✓ Copied main.js to root');
+          console.log('✓ Copied dist/main.js → main.js');
         } catch (e) {
           console.error('Failed to copy:', e);
         }
       }
-    }] : [],
+    }],
   };
 });
