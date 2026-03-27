@@ -1,17 +1,17 @@
-import { App, MarkdownPostProcessorContext, Component } from 'obsidian'
+import { App, MarkdownPostProcessorContext } from 'obsidian'
 import type VitePressThemePlugin from '../main'
 
 /**
  * Parses VitePress-style custom containers
- * Syntax: ::: type [title]
- *         content
- *         :::
  *
- * GitHub-style mapping:
- * - ::: info -> [!NOTE] 蓝色
- * - ::: tip -> [!TIP] 绿色
- * - ::: warning -> [!WARNING] 黄色
- * - ::: danger -> [!CAUTION] 红色
+ * 核心设计思路：
+ * Obsidian 的 registerMarkdownPostProcessor 是逐块（per-section）调用的。
+ * 每次调用时 el 只代表一个 block（段落 / 代码块 / 标题等）。
+ *
+ * code-group 跨多个 block，因此不能在看到 "开始" 时处理（后续块还未渲染）。
+ * 正确策略：当 postProcessor 处理到「闭合 :::」元素时，
+ *   此时 start 段落 + 中间代码块 + end 段落都已在 DOM 里，
+ *   向前查找 ::: code-group 开始标记，然后完整组装。
  */
 export class ContainerParser {
   private plugin: VitePressThemePlugin
@@ -27,7 +27,7 @@ export class ContainerParser {
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>'
   }
 
-  // GitHub-style label mapping (Chinese)
+  // GitHub-style label mapping
   private labelMap: Record<string, string> = {
     info: '提示',
     tip: '建议',
@@ -35,43 +35,299 @@ export class ContainerParser {
     danger: '危险'
   }
 
+  private globalDebounceTimer: number | null = null
+
   constructor(plugin: VitePressThemePlugin) {
     this.plugin = plugin
     this.app = plugin.app
+    this.startScanner()
+  }
+
+  public startScanner() {
+    this.plugin.registerInterval(
+      window.setInterval(() => {
+        this.scanAllSections()
+      }, 800)
+    )
+  }
+
+  public scanAllSections() {
+    const sections = document.querySelectorAll('.markdown-preview-section')
+    sections.forEach((section) => {
+      this.processCodeGroupsInSection(section)
+    })
   }
 
   /**
-   * Post-processor for custom containers
+   * Post-processor entry — called once per rendered block
    */
   processContainer = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
     if (!this.plugin.settings.enableContainerParser) return
 
-    // Process code block format
+    // ① code-fence 格式 (:::\n inside ``` ``` ```)
     const codeBlocks = el.querySelectorAll('pre > code')
     codeBlocks.forEach((codeBlock) => {
       const pre = codeBlock.parentElement
       const text = codeBlock.textContent || ''
-
-      if (this.isContainerStart(text)) {
+      if (/^:::\s*(tip|warning|danger|info|code-group)/i.test(text.trim())) {
         this.parseContainerBlock(pre as HTMLElement, ctx)
       }
     })
 
-    // Process paragraph format (::: in text with <br>)
+    // ② 单块段落容器 (info / tip / warning / danger)
     this.processParagraphContainers(el)
+
+    // ③ code-group 跨块容器：延迟扫描整个页面
+    // 强制使用全局去抖并扫描全页，解决切回阅读模式没渲染的问题
+    if (this.globalDebounceTimer) {
+      window.clearTimeout(this.globalDebounceTimer)
+    }
+    this.globalDebounceTimer = window.setTimeout(() => {
+      this.globalDebounceTimer = null
+      this.scanAllSections()
+    }, 150)
+  }
+
+  // ─────────────────────────────────────────────
+  // 跨块 code-group 防抖组装
+  // ─────────────────────────────────────────────
+
+  /**
+   * 扫描整个 section 的直接子元素，寻找 ::: code-group 和 ::: 的配对
+   */
+  private processCodeGroupsInSection(section: Element): void {
+    const children = Array.from(section.children)
+    let startIndex = -1
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i] as HTMLElement
+      
+      let isStart = false
+      if (child.dataset.cgMarker === 'start') {
+        isStart = true
+      } else {
+        const p = child.querySelector('p')
+        if (p && /^(?::\s*)?:::\s*code-group/i.test(p.textContent?.trim() || '')) {
+          isStart = true
+        }
+      }
+
+      if (startIndex === -1) {
+        if (isStart) {
+          startIndex = i
+        }
+      } else {
+        let isEnd = false
+        if (child.dataset.cgMarker === 'end') {
+          isEnd = true
+        } else {
+          const p = child.querySelector('p')
+          if (p && p.textContent?.trim() === ':::') {
+            isEnd = true
+          }
+        }
+
+        if (isEnd) {
+          const startEl = children[startIndex] as HTMLElement
+          const endEl = child as HTMLElement
+          const middleEls = children.slice(startIndex + 1, i) as HTMLElement[]
+
+          let needsRebuild = false
+          const existingGroup = startEl.querySelector('.vp-code-group')
+
+          if (!existingGroup) {
+            needsRebuild = true
+          } else if (endEl.dataset.cgMarker !== 'end' || endEl.style.display !== 'none') {
+            needsRebuild = true
+          } else {
+            for (const m of middleEls) {
+              if (m.style.display !== 'none') {
+                needsRebuild = true
+                break
+              }
+            }
+          }
+
+          if (needsRebuild) {
+            let activeIndex = 0
+            if (existingGroup) {
+              const activeTab = existingGroup.querySelector('.vp-code-group-tab.active') as HTMLElement
+              if (activeTab && activeTab.dataset.index) {
+                activeIndex = parseInt(activeTab.dataset.index)
+              }
+            }
+
+            startEl.innerHTML = ''
+            startEl.dataset.cgMarker = 'start'
+
+            endEl.innerHTML = ''
+            endEl.dataset.cgMarker = 'end'
+            endEl.style.display = 'none'
+
+            this.buildCodeGroup(startEl, middleEls, activeIndex)
+          }
+
+          startIndex = -1 // 重置，继续寻找下一个
+        }
+      }
+    }
   }
 
   /**
-   * Check if text is a container start
-   * VitePress syntax: ::: info|tip|warning|danger|code-group
+   * 组装 code-group DOM (深度 Clone 模式，不碰 Obsidian 的缓存节点树)
    */
-  private isContainerStart(text: string): boolean {
-    return /^:::\s*(tip|warning|danger|info|code-group)/i.test(text.trim())
+  private buildCodeGroup(startWrapper: HTMLElement, middleEls: HTMLElement[], activeIndex = 0): void {
+    const codeGroupEl = document.createElement('div')
+    codeGroupEl.className = 'vp-code-group'
+
+    const tabsEl = document.createElement('div')
+    tabsEl.className = 'vp-code-group-tabs'
+
+    const contentsEl = document.createElement('div')
+    contentsEl.className = 'vp-code-group-contents'
+
+    let tabIndex = 0
+
+    for (const wrapper of middleEls) {
+      const codeEl = wrapper.querySelector('code') as HTMLElement | null
+      if (!codeEl) {
+        wrapper.style.display = 'none'
+        continue
+      }
+
+      // 我们必须从最原始的 pre 出发进行 clone，不能去 clone 带有状态的 .vp-code-block
+      const preEl = codeEl.closest('pre') as HTMLElement | null
+      if (!preEl) {
+        wrapper.style.display = 'none'
+        continue
+      }
+
+      const filename = this.extractFilename(codeEl)
+
+      // 1. 创建全新的 Clone 节点（摆脱 Obsidian 和原 codeEnhancer 绑定的事件状态）
+      const rawPreClone = preEl.cloneNode(true) as HTMLElement
+      
+      // 2. 将隐藏的原始节点放置一旁
+      wrapper.style.display = 'none'
+
+      const tabEl = document.createElement('button')
+      tabEl.className = `vp-code-group-tab${tabIndex === activeIndex ? ' active' : ''}`
+      tabEl.textContent = filename
+      tabEl.dataset.index = String(tabIndex)
+      tabEl.addEventListener('click', () => {
+        const idx = parseInt(tabEl.dataset.index || '0')
+        tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => {
+          t.classList.toggle('active', i === idx)
+        })
+        contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => {
+          c.classList.toggle('active', i === idx)
+        })
+      })
+      tabsEl.appendChild(tabEl)
+
+      const contentEl = document.createElement('div')
+      contentEl.className = `vp-code-group-content${tabIndex === activeIndex ? ' active' : ''}`
+      contentEl.dataset.index = String(tabIndex)
+      
+      // 3. 将 Clone 的 Pre 节点插进我们的内容窗格
+      contentEl.appendChild(rawPreClone)
+      
+      // 4. 对这个全新的 Pre 运行增强逻辑（恢复它的 Copy 按钮绑定和独立样式）
+      this.plugin.codeEnhancer.enhanceSingleBlock(rawPreClone)
+
+      contentsEl.appendChild(contentEl)
+
+      tabIndex++
+    }
+
+    if (tabIndex === 0) return
+
+    codeGroupEl.appendChild(tabsEl)
+    codeGroupEl.appendChild(contentsEl)
+
+    // 新的 VP 结构安全地挂载在负责定界的 Start 节点内部
+    startWrapper.appendChild(codeGroupEl)
+  }
+
+  // ─────────────────────────────────────────────
+  // 辅助方法
+  // ─────────────────────────────────────────────
+
+  /**
+   * 获取 el 在 markdown-preview-section 中的直接子元素
+   * Obsidian 将每个 block 包裹在单个子 div 内，需要层层向上找到顶层
+   */
+  private getSectionLevelEl(el: Element): Element | null {
+    let current: Element = el
+    while (current.parentElement) {
+      const parent = current.parentElement
+      // 到达 section 容器时停止
+      if (
+        parent.classList.contains('markdown-preview-section') ||
+        parent.classList.contains('markdown-rendered') ||
+        parent.classList.contains('markdown-preview-view')
+      ) {
+        return current
+      }
+      current = parent
+    }
+    return current
   }
 
   /**
-   * Parse a container block from code element
+   * 提取代码块文件名（显示在 tab 上）
+   * Obsidian 将完整 info string 存入 data-lang，格式如 "ts [filename.ts]"
    */
+  private extractFilename(codeEl: Element): string {
+    const filename = codeEl.getAttribute('data-filename')
+    if (filename) return filename
+
+    const dataLang = codeEl.getAttribute('data-lang') || ''
+    const m = dataLang.match(/\[(.+?)\]/)
+    if (m) return m[1]
+    // 回退：取语言名
+    const langMatch = codeEl.className.match(/language-(\w+)/)
+    return langMatch ? langMatch[1] : 'text'
+  }
+
+  // ─────────────────────────────────────────────
+  // 单块容器处理（info / tip / warning / danger）
+  // ─────────────────────────────────────────────
+
+  private processParagraphContainers(el: HTMLElement): void {
+    const paragraphs = el.querySelectorAll('p')
+    paragraphs.forEach((p) => {
+      const html = p.innerHTML
+      // 跳过 code-group（由 tryAssembleCodeGroup 处理）
+      if (/^(?::\s*)?:::\s*code-group/i.test(html)) return
+
+      const containerMatch = html.match(/^(?::\s*)?:::\s*(\w+)(?:\s+([^<\n]+))?\s*(?:<br\s*\/?>|\n)?([\\s\S]*?)<br\s*\/?>\s*:::\s*$/i)
+      if (!containerMatch) return
+
+      const [, type, customTitle, content] = containerMatch
+      const typeLower = type.toLowerCase()
+      if (!this.labelMap[typeLower]) return
+
+      const containerEl = this.createContainerElement(typeLower, customTitle?.trim())
+      const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
+
+      content.split(/<br\s*\/?>\s*/i).forEach((line) => {
+        const trimmed = line.trim()
+        if (!trimmed) return
+        const lineP = document.createElement('p')
+        lineP.innerHTML = trimmed
+        contentEl.appendChild(lineP)
+      })
+
+      const wrapper = this.getSectionLevelEl(p) || p
+      wrapper.replaceWith(containerEl)
+    })
+  }
+
+  // ─────────────────────────────────────────────
+  // code-fence 格式的容器（::: 在 ``` 内）
+  // ─────────────────────────────────────────────
+
   private parseContainerBlock(startEl: HTMLElement, ctx: MarkdownPostProcessorContext): void {
     const codeBlock = startEl.querySelector('code')
     if (!codeBlock) return
@@ -83,16 +339,13 @@ export class ContainerParser {
     const [, type, customTitle] = match
     const typeLower = type.toLowerCase()
 
-    // Handle code-group specially
     if (typeLower === 'code-group') {
+      // code-fence 格式的 code-group（不常见，保留处理）
       this.parseCodeGroupBlock(startEl, ctx)
       return
     }
 
-    // Create GitHub-style container
     const containerEl = this.createContainerElement(typeLower, customTitle)
-
-    // Find closing :::
     let currentEl: HTMLElement | null = startEl.parentElement?.nextElementSibling as HTMLElement
     const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
 
@@ -102,7 +355,6 @@ export class ContainerParser {
         currentEl.remove()
         break
       }
-
       contentEl.appendChild(currentEl.cloneNode(true))
       const toRemove = currentEl
       currentEl = currentEl.nextElementSibling as HTMLElement
@@ -112,170 +364,6 @@ export class ContainerParser {
     startEl.parentElement?.replaceWith(containerEl)
   }
 
-  /**
-   * Process containers in paragraph format (with <br> line breaks)
-   * Obsidian 将每个段落包裹在 div.el-p 中，需要考虑这个层级结构
-   */
-  private processParagraphContainers(el: HTMLElement): void {
-    const paragraphs = el.querySelectorAll('p')
-
-    paragraphs.forEach((p) => {
-      const html = p.innerHTML
-
-      // First check for code-group (content is in separate elements, not in the same paragraph)
-      const codeGroupMatch = html.match(/^(?::\s*)?:::\s*code-group/i)
-      if (codeGroupMatch) {
-        this.parseCodeGroupFromParagraph(p as HTMLParagraphElement)
-        return
-      }
-
-      // Check if this paragraph contains ::: container syntax
-      // Pattern: starts with ::: type [title] and ends with :::
-      const containerMatch = html.match(/^(?::\s*)?:::\s*(\w+)(?:\s+([^<\n]+))?\s*(?:<br\s*\/?>\s*|\n)?([\s\S]*?)<br\s*\/?>\s*:::\s*$/i)
-
-      if (containerMatch) {
-        const [, type, customTitle, content] = containerMatch
-        const typeLower = type.toLowerCase()
-
-        if (!this.labelMap[typeLower]) return // Unknown type
-
-        const containerEl = this.createContainerElement(typeLower, customTitle?.trim())
-        const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
-
-        // Parse content (handle <br> as line breaks)
-        const contentLines = content.split(/<br\s*\/?>\s*/i)
-        contentLines.forEach((line) => {
-          const trimmedLine = line.trim()
-          if (!trimmedLine) return
-          const lineP = document.createElement('p')
-          lineP.innerHTML = trimmedLine
-          contentEl.appendChild(lineP)
-        })
-
-        // Replace the paragraph or its Obsidian wrapper
-        const wrapper = this.getObsidianWrapper(p)
-        wrapper.replaceWith(containerEl)
-      }
-    })
-  }
-
-  /**
-   * 获取 Obsidian 包裹容器（div.el-p / div.el-pre 等）
-   * 如果 p 的直接父元素是 Obsidian 的包裹 div，返回它；否则返回 p 自身
-   */
-  private getObsidianWrapper(el: Element): Element {
-    const parent = el.parentElement
-    if (!parent) return el
-    // Obsidian 包裹 div 的 class 通常为 el-p, el-pre, el-h1 等
-    if (parent.tagName === 'DIV' && /\bel-/.test(parent.className)) {
-      return parent
-    }
-    return el
-  }
-
-  /**
-   * 提取代码块的文件名（显示在 tab 上）
-   * 支持格式：```ts [filename]``` ，也支持只有语言的情况
-   */
-  private extractFilename(codeEl: Element): string {
-    // Obsidian 会将完整 info string 放到 data-lang 属性，格式如: "ts [filename]"
-    const dataLang = codeEl.getAttribute('data-lang') || ''
-    const filenameFromDataLang = dataLang.match(/\[(.+?)\]/)
-    if (filenameFromDataLang) return filenameFromDataLang[1]
-
-    // 备用：从 class 获取语言名
-    const className = codeEl.className || ''
-    const langMatch = className.match(/language-(\w+)/)
-    return langMatch ? langMatch[1] : 'text'
-  }
-
-  /**
-   * Parse code-group from paragraph format (::: code-group in <p>)
-   * 注意：Obsidian 中每个段落/代码块被包裹在 div.el-p / div.el-pre 容器里
-   * 需要从包裹容器层级进行兄弟遍历才能找到后续代码块
-   */
-  private parseCodeGroupFromParagraph(startP: HTMLParagraphElement): void {
-    // 获取 Obsidian 包裹容器（div.el-p）作为居然起点进行兄弟遍历
-    const startWrapper = this.getObsidianWrapper(startP)
-    const parentEl = startWrapper.parentElement
-    if (!parentEl) return
-
-    const codeGroupEl = document.createElement('div')
-    codeGroupEl.className = 'vp-code-group'
-
-    const tabsEl = document.createElement('div')
-    tabsEl.className = 'vp-code-group-tabs'
-
-    const contentsEl = document.createElement('div')
-    contentsEl.className = 'vp-code-group-contents'
-
-    // 从包裹容器的下一个兄弟开始遍历（而不是 p 的下一个兄弟）
-    let currentEl: Element | null = startWrapper.nextElementSibling
-    let tabIndex = 0
-    const activeTab = 0
-
-    while (currentEl) {
-      // Check for closing ::: (supports both paragraph and code block format)
-      const text = currentEl.textContent?.trim() || ''
-      const innerCode = currentEl.querySelector('pre > code')
-      // 支持段落格式 ":::" 和 code 块格式 ":::" 两种闭合方式
-      if (text === ':::' || (innerCode && innerCode.textContent?.trim() === ':::')) {
-        currentEl.remove()
-        break
-      }
-
-      // Check if this is a code block (may be wrapped in div.el-pre by Obsidian)
-      const preEl = currentEl.querySelector('pre') as HTMLPreElement | null
-      const codeEl = preEl?.querySelector('code')
-
-      if (preEl && codeEl) {
-        const filename = this.extractFilename(codeEl)
-
-        // Create tab
-        const tabEl = document.createElement('button')
-        tabEl.className = `vp-code-group-tab${tabIndex === activeTab ? ' active' : ''}`
-        tabEl.textContent = filename
-        tabEl.dataset.index = String(tabIndex)
-        tabEl.addEventListener('click', () => {
-          const idx = parseInt(tabEl.dataset.index || '0')
-          tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => {
-            t.classList.toggle('active', i === idx)
-          })
-          contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => {
-            c.classList.toggle('active', i === idx)
-          })
-        })
-        tabsEl.appendChild(tabEl)
-
-        // Create content wrapper, move pre directly (no clone)
-        const contentEl = document.createElement('div')
-        contentEl.className = `vp-code-group-content${tabIndex === activeTab ? ' active' : ''}`
-        contentEl.dataset.index = String(tabIndex)
-        contentEl.appendChild(preEl)
-        contentsEl.appendChild(contentEl)
-
-        tabIndex++
-
-        const toRemove = currentEl
-        currentEl = currentEl.nextElementSibling
-        toRemove.remove()
-      } else {
-        currentEl = currentEl.nextElementSibling
-      }
-    }
-
-    // Only add if we found at least one code block
-    if (tabIndex > 0) {
-      codeGroupEl.appendChild(tabsEl)
-      codeGroupEl.appendChild(contentsEl)
-      // 替换 Obsidian 包裹容器（而不是只替换 p 元素）
-      startWrapper.replaceWith(codeGroupEl)
-    }
-  }
-
-  /**
-   * Parse code-group container with tabbed code blocks
-   */
   private parseCodeGroupBlock(startEl: HTMLElement, ctx: MarkdownPostProcessorContext): void {
     const codeGroupEl = document.createElement('div')
     codeGroupEl.className = 'vp-code-group'
@@ -288,49 +376,35 @@ export class ContainerParser {
 
     let currentEl: HTMLElement | null = startEl.parentElement?.nextElementSibling as HTMLElement
     let tabIndex = 0
-    const activeTab = 0
 
     while (currentEl) {
-      // Check for closing :::
       const code = currentEl.querySelector('pre > code')
       if (code && code.textContent?.trim() === ':::') {
         currentEl.remove()
         break
       }
 
-      // Check if this is a code block
       const preEl = currentEl.querySelector('pre')
       const codeEl = preEl?.querySelector('code')
 
       if (preEl && codeEl) {
         const filename = this.extractFilename(codeEl)
-
-        // Create tab
         const tabEl = document.createElement('button')
-        tabEl.className = `vp-code-group-tab${tabIndex === activeTab ? ' active' : ''}`
+        tabEl.className = `vp-code-group-tab${tabIndex === 0 ? ' active' : ''}`
         tabEl.textContent = filename
         tabEl.dataset.index = String(tabIndex)
         tabEl.addEventListener('click', () => {
           const idx = parseInt(tabEl.dataset.index || '0')
-          tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => {
-            t.classList.toggle('active', i === idx)
-          })
-          contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => {
-            c.classList.toggle('active', i === idx)
-          })
+          tabsEl.querySelectorAll('.vp-code-group-tab').forEach((t, i) => t.classList.toggle('active', i === idx))
+          contentsEl.querySelectorAll('.vp-code-group-content').forEach((c, i) => c.classList.toggle('active', i === idx))
         })
         tabsEl.appendChild(tabEl)
 
-        // Create content wrapper
         const contentEl = document.createElement('div')
-        contentEl.className = `vp-code-group-content${tabIndex === activeTab ? ' active' : ''}`
+        contentEl.className = `vp-code-group-content${tabIndex === 0 ? ' active' : ''}`
         contentEl.dataset.index = String(tabIndex)
-
-        // Move the pre element into content
-        const clonedPre = preEl.cloneNode(true) as HTMLElement
-        contentEl.appendChild(clonedPre)
+        contentEl.appendChild(preEl.cloneNode(true))
         contentsEl.appendChild(contentEl)
-
         tabIndex++
       }
 
@@ -341,13 +415,13 @@ export class ContainerParser {
 
     codeGroupEl.appendChild(tabsEl)
     codeGroupEl.appendChild(contentsEl)
-
     startEl.parentElement?.replaceWith(codeGroupEl)
   }
 
-  /**
-   * Create container DOM element
-   */
+  // ─────────────────────────────────────────────
+  // DOM 工厂
+  // ─────────────────────────────────────────────
+
   private createContainerElement(type: string, customTitle?: string): HTMLElement {
     const typeLower = type.toLowerCase()
     const icon = this.svgIcons[typeLower] || ''
@@ -356,7 +430,6 @@ export class ContainerParser {
 
     const containerEl = document.createElement('div')
     containerEl.className = `vp-container vp-${typeLower}`
-
     containerEl.innerHTML = `
       <div class="vp-container-header">
         <span class="vp-container-icon">${icon}</span>
@@ -364,13 +437,9 @@ export class ContainerParser {
       </div>
       <div class="vp-container-content"></div>
     `
-
     return containerEl
   }
 
-  /**
-   * Create container HTML from parsed data (for external use)
-   */
   createContainer(type: string, title: string, content: string): string {
     const typeLower = type.toLowerCase()
     const icon = this.svgIcons[typeLower] || ''

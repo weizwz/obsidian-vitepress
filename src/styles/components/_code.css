@@ -37,32 +37,6 @@
   letter-spacing: 0.05em;
 }
 
-.vp-code-copy-btn {
-  background: var(--vp-code-copy-code-bg);
-  border: none;
-  color: var(--vp-c-text-2);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.8em;
-  cursor: pointer;
-  opacity: 0;
-  transition:
-    opacity 0.2s,
-    background-color 0.2s;
-}
-
-.vp-code-block:hover .vp-code-copy-btn {
-  opacity: 1;
-}
-
-.vp-code-copy-btn:hover {
-  background: var(--vp-code-copy-code-hover-bg);
-}
-
-.vp-code-copy-btn.copied {
-  color: var(--vp-c-tip-1);
-}
-
 .vp-code-block pre {
   margin: 0;
   padding: 16px 20px;
@@ -140,6 +114,7 @@
 }
 
 .vp-code-group-tab {
+  display: inline-block !important;
   padding: 10px 16px;
   font-family: var(--vp-font-family-mono);
   font-size: 0.85em;
@@ -172,6 +147,10 @@
 
 .vp-code-group-content.active {
   display: block;
+}
+
+.vp-code-group-content .vp-code-lang {
+  display: none !important;
 }
 
 /* code-group 内代码块样式 */

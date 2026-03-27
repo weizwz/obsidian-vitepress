@@ -9,7 +9,7 @@ import { EmojiProcessor } from './features/emojiProcessor'
 export default class VitePressThemePlugin extends Plugin {
   settings: VitePressSettings
   private containerParser: ContainerParser
-  private codeEnhancer: CodeEnhancer
+  public codeEnhancer: CodeEnhancer
   private linkProcessor: LinkProcessor
   private emojiProcessor: EmojiProcessor
   private styleElement: HTMLStyleElement | null = null
@@ -32,7 +32,7 @@ export default class VitePressThemePlugin extends Plugin {
     // Register post processors
     this.registerMarkdownPostProcessor((el, ctx) => {
       this.containerParser.processContainer(el, ctx)
-      this.codeEnhancer.enhanceCodeBlocks(el)
+      this.codeEnhancer.enhanceCodeBlocks(el, ctx)
       this.linkProcessor.processLinks(el, ctx)
       this.emojiProcessor.processEmoji(el, ctx)
     })
@@ -311,11 +311,13 @@ export default class VitePressThemePlugin extends Plugin {
    */
   private getCodeBlockStyles(): string {
     return `
+      .markdown-rendered pre {
+        margin: 0;
+      }
       .vp-code-block {
         background: var(--code-background);
         border-radius: 8px;
         overflow: hidden;
-        margin: 16px 0;
       }
 
       .vp-code-block-header {
@@ -323,24 +325,7 @@ export default class VitePressThemePlugin extends Plugin {
         justify-content: space-between;
         align-items: center;
         padding: 8px 16px;
-        background: var(--background-secondary-alt);
-      }
-
-      .vp-code-copy-btn {
-        background: var(--interactive-normal);
-        border: none;
-        padding: 4px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.85em;
-      }
-
-      .vp-code-copy-btn:hover {
-        background: var(--interactive-hover);
-      }
-
-      .vp-code-copy-btn.copied {
-        color: #42b883;
+        box-shadow: inset 0 -1px var(--background-modifier-border);
       }
     `
   }
@@ -509,42 +494,66 @@ export default class VitePressThemePlugin extends Plugin {
   private getCodeGroupStyles(): string {
     return `
       /* Code Group - Tabbed Code Blocks */
+      :root {
+        --code-background: var(--background-secondary);
+      }
       .vp-code-group {
         border-radius: 8px;
         overflow: hidden;
         margin: 16px 0;
         background: var(--code-background);
-        border: 1px solid var(--background-modifier-border);
+      }
+
+      .vp-code-group .vp-code-block-header {
+        display: none;
       }
 
       .vp-code-group-tabs {
         display: flex;
-        background: var(--background-secondary);
-        border-bottom: 1px solid var(--background-modifier-border);
-        padding: 0 8px;
+        padding: 0 16px;
         overflow-x: auto;
+        box-shadow: inset 0 -1px var(--background-modifier-border);
       }
 
       .vp-code-group-tab {
-        padding: 10px 16px;
-        border: none;
-        background: transparent;
+        padding: 8px;
+        border: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
         color: var(--text-muted);
         cursor: pointer;
+        font-family: var(--font-monospace);
         font-size: 0.9em;
-        border-bottom: 2px solid transparent;
-        transition: color 0.2s, border-color 0.2s;
+        position: relative;
         white-space: nowrap;
         flex-shrink: 0;
+        margin: 0 !important;
+        height: 46px;
       }
 
       .vp-code-group-tab:hover {
         color: var(--text-normal);
       }
 
+      .vp-code-group-tab::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        border-radius: 2px;
+        background-color: transparent;
+        transition: background-color 0.2s;
+      }
+
       .vp-code-group-tab.active {
-        color: var(--interactive-accent);
-        border-bottom-color: var(--interactive-accent);
+        color: var(--interactive-accent) !important;
+      }
+
+      .vp-code-group-tab.active::after {
+        background-color: var(--interactive-accent);
       }
 
       .vp-code-group-contents {
