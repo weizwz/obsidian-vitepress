@@ -46,7 +46,9 @@
   font-size: 0.8em;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s, background-color 0.2s;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
 }
 
 .vp-code-block:hover .vp-code-copy-btn {
@@ -132,7 +134,9 @@
 .vp-code-group-tabs {
   display: flex;
   background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
 }
 
 .vp-code-group-tab {
@@ -144,7 +148,11 @@
   border: none;
   background: transparent;
   border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vp-code-group-tab:hover {
@@ -156,16 +164,30 @@
   border-bottom-color: var(--vp-c-brand-1);
 }
 
+/* content 面板：默认隐藏，active 时显示 */
 .vp-code-group-content {
+  display: none;
   position: relative;
 }
 
+.vp-code-group-content.active {
+  display: block;
+}
+
+/* code-group 内代码块样式 */
+.vp-code-group-content pre {
+  margin: 0;
+  border-radius: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  background: transparent;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.875em;
+  line-height: 1.7;
+}
+
+/* 若 codeEnhancer 也处理了 code-group 内的块，保证样式正确 */
 .vp-code-group-content .vp-code-block {
   margin: 0;
   border-radius: 0;
-  display: none;
-}
-
-.vp-code-group-content .vp-code-block.active {
-  display: block;
 }

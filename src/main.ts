@@ -1,74 +1,74 @@
-import { App, Component, MarkdownPostProcessorContext, Plugin, TFile } from 'obsidian';
-import { VitePressSettingTab } from './settings';
-import { VitePressSettings, DEFAULT_SETTINGS } from './types/settings';
-import { ContainerParser } from './features/containerParser';
-import { CodeEnhancer } from './features/codeEnhancer';
-import { LinkProcessor } from './features/linkProcessor';
-import { EmojiProcessor } from './features/emojiProcessor';
+import { App, Component, MarkdownPostProcessorContext, Plugin, TFile } from 'obsidian'
+import { VitePressSettingTab } from './settings'
+import { VitePressSettings, DEFAULT_SETTINGS } from './types/settings'
+import { ContainerParser } from './features/containerParser'
+import { CodeEnhancer } from './features/codeEnhancer'
+import { LinkProcessor } from './features/linkProcessor'
+import { EmojiProcessor } from './features/emojiProcessor'
 
 export default class VitePressThemePlugin extends Plugin {
-  settings: VitePressSettings;
-  private containerParser: ContainerParser;
-  private codeEnhancer: CodeEnhancer;
-  private linkProcessor: LinkProcessor;
-  private emojiProcessor: EmojiProcessor;
-  private styleElement: HTMLStyleElement | null = null;
+  settings: VitePressSettings
+  private containerParser: ContainerParser
+  private codeEnhancer: CodeEnhancer
+  private linkProcessor: LinkProcessor
+  private emojiProcessor: EmojiProcessor
+  private styleElement: HTMLStyleElement | null = null
 
   async onload() {
-    await this.loadSettings();
+    await this.loadSettings()
 
     // Initialize features
-    this.containerParser = new ContainerParser(this);
-    this.codeEnhancer = new CodeEnhancer(this);
-    this.linkProcessor = new LinkProcessor(this);
-    this.emojiProcessor = new EmojiProcessor(this.app);
+    this.containerParser = new ContainerParser(this)
+    this.codeEnhancer = new CodeEnhancer(this)
+    this.linkProcessor = new LinkProcessor(this)
+    this.emojiProcessor = new EmojiProcessor(this.app)
 
     // Add settings tab
-    this.addSettingTab(new VitePressSettingTab(this.app, this));
+    this.addSettingTab(new VitePressSettingTab(this.app, this))
 
     // Apply styles
-    this.applyStyles();
+    this.applyStyles()
 
     // Register post processors
     this.registerMarkdownPostProcessor((el, ctx) => {
-      this.containerParser.processContainer(el, ctx);
-      this.codeEnhancer.enhanceCodeBlocks(el);
-      this.linkProcessor.processLinks(el, ctx);
-      this.emojiProcessor.processEmoji(el, ctx);
-    });
+      this.containerParser.processContainer(el, ctx)
+      this.codeEnhancer.enhanceCodeBlocks(el)
+      this.linkProcessor.processLinks(el, ctx)
+      this.emojiProcessor.processEmoji(el, ctx)
+    })
 
     // Add theme class to body
-    document.body.classList.add('vitepress-theme');
+    document.body.classList.add('vitepress-theme')
 
     // Listen for theme changes
     this.registerEvent(
       this.app.workspace.on('css-change', () => {
-        this.applyStyles();
+        this.applyStyles()
       })
-    );
+    )
 
-    this.log('VitePress Theme loaded');
+    this.log('VitePress Theme loaded')
   }
 
   onunload() {
     // Remove styles
     if (this.styleElement) {
-      this.styleElement.remove();
-      this.styleElement = null;
+      this.styleElement.remove()
+      this.styleElement = null
     }
 
     // Remove theme class
-    document.body.classList.remove('vitepress-theme');
+    document.body.classList.remove('vitepress-theme')
 
-    this.log('VitePress Theme unloaded');
+    this.log('VitePress Theme unloaded')
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
   }
 
   async saveSettings() {
-    await this.saveData(this.settings);
+    await this.saveData(this.settings)
   }
 
   /**
@@ -77,50 +77,48 @@ export default class VitePressThemePlugin extends Plugin {
   applyStyles() {
     // Remove existing styles
     if (this.styleElement) {
-      this.styleElement.remove();
+      this.styleElement.remove()
     }
 
     // Create new style element
-    this.styleElement = document.createElement('style');
-    this.styleElement.id = 'vitepress-theme-styles';
+    this.styleElement = document.createElement('style')
+    this.styleElement.id = 'vitepress-theme-styles'
 
-    let css = '';
+    let css = ''
 
     // Base variables always applied
     if (this.settings.followObsidianTheme) {
-      css += this.getDynamicVariables();
+      css += this.getDynamicVariables()
     }
 
     // Apply component styles based on settings
     if (this.settings.enableTypography) {
-      css += this.getTypographyStyles();
+      css += this.getTypographyStyles()
     }
 
     if (this.settings.enableContainers) {
-      css += this.getContainerStyles();
+      css += this.getContainerStyles()
     }
 
     if (this.settings.enableCodeBlocks) {
-      css += this.getCodeBlockStyles();
-      css += this.getCodeGroupStyles();
+      css += this.getCodeBlockStyles()
+      css += this.getCodeGroupStyles()
     }
 
     // Always apply table and callout styles
-    css += this.getTableStyles();
-    css += this.getCalloutStyles();
-    css += this.getEmojiStyles();
+    css += this.getTableStyles()
+    css += this.getCalloutStyles()
+    css += this.getEmojiStyles()
 
-    this.styleElement.textContent = css;
-    document.head.appendChild(this.styleElement);
+    this.styleElement.textContent = css
+    document.head.appendChild(this.styleElement)
   }
 
   /**
    * Get dynamic CSS variables based on Obsidian theme
    */
   private getDynamicVariables(): string {
-    const accent = this.settings.followObsidianTheme
-      ? 'var(--accent-color)'
-      : this.settings.customPrimaryColor;
+    const accent = this.settings.followObsidianTheme ? 'var(--accent-color)' : this.settings.customPrimaryColor
 
     return `
       .vitepress-theme {
@@ -128,7 +126,7 @@ export default class VitePressThemePlugin extends Plugin {
         --vp-c-brand-2: ${accent};
         --vp-c-brand-3: ${accent};
       }
-    `;
+    `
   }
 
   /**
@@ -174,7 +172,7 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .markdown-preview-view a:hover {
         text-decoration: underline;
       }
-    `;
+    `
   }
 
   /**
@@ -305,7 +303,7 @@ export default class VitePressThemePlugin extends Plugin {
         line-height: 1.6;
         margin: 0.5em 0;
       }
-    `;
+    `
   }
 
   /**
@@ -344,7 +342,7 @@ export default class VitePressThemePlugin extends Plugin {
       .vp-code-copy-btn.copied {
         color: #42b883;
       }
-    `;
+    `
   }
 
   /**
@@ -369,7 +367,7 @@ export default class VitePressThemePlugin extends Plugin {
         text-align: left;
         background: var(--background-secondary);
       }
-    `;
+    `
   }
 
   /**
@@ -429,7 +427,7 @@ export default class VitePressThemePlugin extends Plugin {
       .vitepress-theme .callout[data-callout="caution"] .svg-icon {
         color: rgb(var(--callout-error));
       }
-    `;
+    `
   }
 
   /**
@@ -502,9 +500,8 @@ export default class VitePressThemePlugin extends Plugin {
       .HyperMD-codeblock .vp-emoji-source {
         display: inline !important;
       }
-    `;
+    `
   }
-
 
   /**
    * Get code group styles
@@ -524,36 +521,37 @@ export default class VitePressThemePlugin extends Plugin {
         display: flex;
         background: var(--background-secondary);
         border-bottom: 1px solid var(--background-modifier-border);
-        padding: 8px 8px 0 8px;
-        gap: 4px;
+        padding: 0 8px;
+        overflow-x: auto;
       }
 
       .vp-code-group-tab {
-        padding: 8px 16px;
+        padding: 10px 16px;
         border: none;
         background: transparent;
         color: var(--text-muted);
         cursor: pointer;
         font-size: 0.9em;
-        border-radius: 6px 6px 0 0;
-        transition: all 0.2s;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s, border-color 0.2s;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       .vp-code-group-tab:hover {
         color: var(--text-normal);
-        background: var(--background-modifier-hover);
       }
 
       .vp-code-group-tab.active {
-        color: var(--text-normal);
-        background: var(--code-background);
-        border-bottom: 2px solid var(--interactive-accent);
+        color: var(--interactive-accent);
+        border-bottom-color: var(--interactive-accent);
       }
 
       .vp-code-group-contents {
         position: relative;
       }
 
+      /* content 面板：默认隐藏，active 时显示 */
       .vp-code-group-content {
         display: none;
       }
@@ -566,7 +564,7 @@ export default class VitePressThemePlugin extends Plugin {
         margin: 0;
         border-radius: 0;
       }
-    `;
+    `
   }
 
   /**
@@ -574,8 +572,7 @@ export default class VitePressThemePlugin extends Plugin {
    */
   log(...args: any[]) {
     if (this.settings.debugMode) {
-      console.log('[VitePress Theme]', ...args);
+      console.log('[VitePress Theme]', ...args)
     }
   }
 }
-
