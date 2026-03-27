@@ -1,5 +1,6 @@
 import { App, MarkdownPostProcessorContext } from 'obsidian';
 import emojiData from '../data/emoji';
+import type VitePressThemePlugin from '../main';
 
 /**
  * Emoji processor for VitePress-style emoji shortcodes
@@ -16,11 +17,13 @@ import emojiData from '../data/emoji';
  */
 export class EmojiProcessor {
   private app: App;
+  private plugin: VitePressThemePlugin;
   private emojiMap: Map<string, string>;
   private regex: RegExp;
 
-  constructor(app: App) {
+  constructor(app: App, plugin: VitePressThemePlugin) {
     this.app = app;
+    this.plugin = plugin;
     this.emojiMap = new Map(Object.entries(emojiData));
     this.regex = /:([a-zA-Z0-9_+\-]+):/g;
   }
@@ -30,6 +33,10 @@ export class EmojiProcessor {
    * This runs in BOTH reading mode and live preview, but CSS controls visibility
    */
   processEmoji(el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
+    if (!this.plugin.settings.enableEmojiProcessor) {
+      return;
+    }
+
     // Skip code blocks entirely
     if (this.isInsideCodeBlock(el)) {
       return;

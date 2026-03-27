@@ -21,7 +21,7 @@ export class BadgeProcessor {
    * Core processing method called by the PostProcessor
    */
   processBadges = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-    if (!this.plugin.settings.enableContainerParser) return
+    if (!this.plugin.settings.enableBadgeProcessor) return
 
     // Get source info to recover stripped tags
     const sectionInfo = ctx.getSectionInfo(el)

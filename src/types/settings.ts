@@ -43,6 +43,18 @@ export interface VitePressSettings {
    */
   enableLinkProcessing: boolean
 
+  /**
+   * 解析 VitePress 徽章语法
+   * - 将 `<Badge />` 在阅读模式下解析并渲染为徽章
+   */
+  enableBadgeProcessor: boolean
+
+  /**
+   * 解析 VitePress 表情语法
+   * - 将 `:emoji:` 解析为对应的表情符号
+   */
+  enableEmojiProcessor: boolean
+
   // ── 主题配置 ──────────────────────────────────────────────
 
   /**
@@ -74,6 +86,8 @@ export const DEFAULT_SETTINGS: VitePressSettings = {
   enableTypography: true,
   enableContainerParser: true,
   enableLinkProcessing: true,
+  enableBadgeProcessor: true,
+  enableEmojiProcessor: true,
   followObsidianTheme: true,
   customPrimaryColor: '#3451b2',
   debugMode: false,

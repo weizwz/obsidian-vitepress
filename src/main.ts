@@ -23,7 +23,7 @@ export default class VitePressThemePlugin extends Plugin {
     this.containerParser = new ContainerParser(this)
     this.codeEnhancer = new CodeEnhancer(this)
     this.linkProcessor = new LinkProcessor(this)
-    this.emojiProcessor = new EmojiProcessor(this.app)
+    this.emojiProcessor = new EmojiProcessor(this.app, this)
     this.badgeProcessor = new BadgeProcessor(this)
 
     // Add settings tab

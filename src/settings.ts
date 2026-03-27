@@ -75,6 +75,26 @@ export class VitePressSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         }));
 
+    new Setting(containerEl)
+      .setName('Parse VitePress badges')
+      .setDesc('Convert <Badge /> syntax to styled badges')
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableBadgeProcessor)
+        .onChange(async (value) => {
+          this.plugin.settings.enableBadgeProcessor = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName('Parse VitePress emojis')
+      .setDesc('Convert :emoji: syntax to icons')
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableEmojiProcessor)
+        .onChange(async (value) => {
+          this.plugin.settings.enableEmojiProcessor = value;
+          await this.plugin.saveSettings();
+        }));
+
     // Theme Settings
     containerEl.createEl('h3', { text: 'Theme' });
 
