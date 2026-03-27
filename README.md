@@ -1,89 +1,122 @@
 # VitePress Theme for Obsidian
 
-A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing the modern documentation aesthetic to your notes.
+A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing the modern documentation aesthetic and syntax to your notes.
+
+**[中文文档](./README.zh.md)**
 
 ## Features
 
-### Visual Styles
+### Alert Containers
 
-- **Typography** - Clean, readable fonts with proper heading hierarchy
-- **Code Blocks** - Enhanced code blocks with copy button and language labels
-- **Custom Containers** - Tip, warning, danger, and info callouts with VitePress colors
-- **Tables** - Styled tables with hover effects
-- **Links** - External link indicators and improved link styling
+Renders VitePress native `:::` syntax as GitHub Alert-style cards with optional custom titles:
 
-### Functionality
+```markdown
+::: info Information
+This is an info message
+:::
 
-- **Container Parser** - Convert `::: tip` syntax to styled containers
-- **Link Processing** - Handle VitePress-style relative links
-- **Theme Adaptation** - Automatically follow Obsidian light/dark theme
+::: tip Suggestion
+This is a tip
+:::
+
+::: warning Warning
+This is a warning message
+:::
+
+::: danger Danger
+This is a danger alert
+:::
+```
+
+### Collapsible Container
+
+Renders `::: details` as a native clickable `<details>/<summary>` element:
+
+```markdown
+::: details Click to expand
+This content is hidden until clicked
+:::
+```
+
+### Enhanced Code Blocks
+
+Code blocks automatically get a language label and filename display, supporting VitePress `[filename]` syntax:
+
+````markdown
+```ts [config.ts]
+export default {
+  title: 'My Site'
+}
+```
+````
+
+### Code Groups
+
+Groups multiple consecutive code blocks into a tabbed switcher:
+
+````markdown
+::: code-group
+
+```ts [TypeScript]
+const msg: string = 'hello'
+```
+
+```js [JavaScript]
+const msg = 'hello'
+```
+
+:::
+````
+
+### Obsidian Callout Adaptation
+
+Native Obsidian Callouts are automatically styled to match VitePress colors:
+
+```markdown
+> [!note]
+> This is a note callout
+
+> [!warning]
+> This is a warning callout
+```
+
+### Additional Styles
+
+- **Typography** — Headings, line-height, and link styles consistent with VitePress
+- **Tables** — Unified borders and background colors
+- **External Link Icons** — External links automatically get a ↗ indicator
+
+## Compatibility
+
+| Feature | Reading Mode | Live Preview | Source Mode |
+|---------|:-----------:|:------------:|:-----------:|
+| Alert containers (info/tip/warning/danger) | ✅ | ❌ | ❌ |
+| Collapsible container (details) | ✅ | ❌ | ❌ |
+| Code group (code-group) | ✅ | ❌ | ❌ |
+| Code block enhancements | ✅ | ❌ | ❌ |
+| Callout styles | ✅ | ✅ | ❌ |
+| Table / Typography / Links | ✅ | ✅ | ❌ |
+
+> **Note**: VitePress-specific syntax (`:::` containers) is parsed and rendered in Obsidian Reading Mode via Post Processor. Live Preview and Source Mode are intentionally left unprocessed to preserve raw text for editing.
 
 ## Installation
 
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/obsidian-vitepress-theme
+git clone https://github.com/weizwz/obsidian-vitepress-theme
 cd obsidian-vitepress-theme
 pnpm install
 pnpm run build
 ```
 
-Then copy `manifest.json`, `main.js` to your Obsidian vault's `.obsidian/plugins/vitepress-theme/` folder.
+Copy `manifest.json` and `main.js` to your Obsidian vault's `.obsidian/plugins/vitepress-theme/` directory, then enable it under **Settings → Community Plugins**.
 
 ### Manual Installation
 
-1. Download the latest release
-2. Extract to `.obsidian/plugins/vitepress-theme/`
-3. Enable in Obsidian Settings → Community Plugins
-
-## Usage
-
-### VitePress Containers
-
-Use `:::` syntax in your notes:
-
-```markdown
-::: tip
-This is a tip container
-:::
-
-::: warning Warning Title
-This is a warning with custom title
-:::
-
-::: danger STOP!
-This is a danger container
-:::
-
-::: info
-This is an info container
-:::
-
-::: details Click to expand
-Hidden content here
-:::
-```
-
-### Obsidian Callouts
-
-Standard Obsidian callouts are styled to match VitePress:
-
-```markdown
-> [!tip]
-> Looks like VitePress tip container
-
-> [!warning]
-> Looks like VitePress warning container
-```
-
-### Code Blocks
-
-Code blocks get enhanced with:
-
-- Language label in header
-- Copy button on hover
-- Better syntax highlighting
+1. Download the latest release (`manifest.json` and `main.js`)
+2. Place them in `.obsidian/plugins/vitepress-theme/`
+3. Enable under **Settings → Community Plugins**
 
 ## Development
 
@@ -91,24 +124,25 @@ Code blocks get enhanced with:
 # Install dependencies
 pnpm install
 
-# Development with hot reload
+# Development mode (watch + auto-copy to root)
 pnpm run dev
 
-# Build for production
+# Production build (minified + copied to root)
 pnpm run build
 ```
 
 ## Settings
 
-| Setting                    | Description              | Default |
-| -------------------------- | ------------------------ | ------- |
-| Enable code block styles   | Enhanced code blocks     | ✅      |
-| Enable container styles    | Custom container styling | ✅      |
-| Enable typography styles   | Typography improvements  | ✅      |
-| Parse VitePress containers | Parse `:::` syntax       | ✅      |
-| Process links              | External link icons      | ✅      |
-| Follow Obsidian theme      | Adapt to Obsidian colors | ✅      |
-| Custom primary color       | Brand color override     | #3451b2 |
+| Setting | Description | Default |
+|---------|-------------|:-------:|
+| Enable code block styles | Language labels and filename display | ✅ |
+| Enable container styles | Alert container and details CSS | ✅ |
+| Enable typography styles | Heading, link, and layout styles | ✅ |
+| Parse VitePress containers | Parse `:::` syntax and render containers | ✅ |
+| Process links | External link icons and internal link handling | ✅ |
+| Follow Obsidian theme | Auto-adapt to Obsidian's color theme | ✅ |
+| Custom primary color | Custom brand color (when not following theme) | `#3451b2` |
+| Debug mode | Enable console debug logging | ❌ |
 
 ## License
 
