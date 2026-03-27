@@ -7,11 +7,11 @@ import { LinkProcessor } from './features/linkProcessor'
 import { EmojiProcessor } from './features/emojiProcessor'
 
 export default class VitePressThemePlugin extends Plugin {
-  settings: VitePressSettings
-  private containerParser: ContainerParser
-  public codeEnhancer: CodeEnhancer
-  private linkProcessor: LinkProcessor
-  private emojiProcessor: EmojiProcessor
+  settings!: VitePressSettings
+  private containerParser!: ContainerParser
+  public codeEnhancer!: CodeEnhancer
+  private linkProcessor!: LinkProcessor
+  private emojiProcessor!: EmojiProcessor
   private styleElement: HTMLStyleElement | null = null
 
   async onload() {
