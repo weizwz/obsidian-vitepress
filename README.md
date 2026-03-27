@@ -3,6 +3,8 @@
 A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing the modern documentation aesthetic and syntax to your notes.
 
 **[中文文档](./README.zh.md)**
+ 
+![Preview](src/asset/images/preview.png)
 
 ## Features
 
@@ -80,6 +82,17 @@ Native Obsidian Callouts are automatically styled to match VitePress colors:
 > This is a warning callout
 ```
 
+### Badge Component
+
+VitePress-style badges for marking status or versions:
+
+```markdown
+VitePress <Badge type="info" text="default" />
+VitePress <Badge type="tip" text="^1.5.0" />
+VitePress <Badge type="warning" text="beta" />
+VitePress <Badge type="danger" text="caution" />
+```
+
 ### Additional Styles
 
 - **Typography** — Headings, line-height, and link styles consistent with VitePress
@@ -92,6 +105,7 @@ Native Obsidian Callouts are automatically styled to match VitePress colors:
 |---------|:-----------:|:------------:|:-----------:|
 | Alert containers (info/tip/warning/danger) | ✅ | ❌ | ❌ |
 | Collapsible container (details) | ✅ | ❌ | ❌ |
+| Badge component (Badge) | ✅ | ❌ | ❌ |
 | Code group (code-group) | ✅ | ❌ | ❌ |
 | Code block enhancements | ✅ | ❌ | ❌ |
 | Callout styles | ✅ | ✅ | ❌ |

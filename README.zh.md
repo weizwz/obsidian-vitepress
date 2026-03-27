@@ -3,6 +3,8 @@
 一个为 Obsidian 设计的 [VitePress](https://vitepress.dev/) 风格主题插件，让你在 Obsidian 中获得与 VitePress 文档站点一致的阅读体验——包括语法容器、折叠容器、代码组等特性。
 
 **[English Documentation](./README.md)**
+ 
+![预览](src/asset/images/preview.png)
 
 ## 功能特性
 
@@ -80,6 +82,17 @@ const msg = 'hello'
 > 这是一个 warning callout
 ```
 
+### 徽章组件
+
+支持 VitePress 风格的行内徽章（Badge），常用于标注版本或状态：
+
+```markdown
+VitePress <Badge type="info" text="default" />
+VitePress <Badge type="tip" text="^1.5.0" />
+VitePress <Badge type="warning" text="beta" />
+VitePress <Badge type="danger" text="caution" />
+```
+
 ### 其他样式
 
 - **排版** — 标题层级、行高、链接样式与 VitePress 保持一致
@@ -92,6 +105,7 @@ const msg = 'hello'
 |------|:------:|:------:|:------:|
 | 提示容器（info/tip/warning/danger） | ✅ | ❌ | ❌ |
 | 折叠容器（details） | ✅ | ❌ | ❌ |
+| 徽章组件（Badge） | ✅ | ❌ | ❌ |
 | 代码块组（code-group） | ✅ | ❌ | ❌ |
 | 代码块增强（语言标签/文件名） | ✅ | ❌ | ❌ |
 | Callout 样式 | ✅ | ✅ | ❌ |
