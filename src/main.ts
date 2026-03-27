@@ -327,6 +327,7 @@ export default class VitePressThemePlugin extends Plugin {
         align-items: center;
         padding: 8px 16px;
         box-shadow: inset 0 -1px var(--background-modifier-border);
+        font-size: 0.9em;
       }
     `
   }
@@ -515,7 +516,7 @@ export default class VitePressThemePlugin extends Plugin {
 
       .vp-code-group-tabs {
         display: flex;
-        padding: 0 16px;
+        padding: 0 8px;
         overflow-x: auto;
         box-shadow: inset 0 -1px var(--background-modifier-border);
       }
