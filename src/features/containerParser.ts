@@ -35,27 +35,48 @@ export class ContainerParser {
     details: '详细信息'
   }
 
+  private observer: MutationObserver | null = null
   private globalDebounceTimer: number | null = null
 
   constructor(plugin: VitePressThemePlugin) {
     this.plugin = plugin
     this.app = plugin.app
-    this.startScanner()
+    this.initObserver()
   }
 
-  public startScanner() {
-    this.plugin.registerInterval(
-      window.setInterval(() => {
-        this.scanAllSections()
-      }, 800)
-    )
-  }
-
-  public scanAllSections() {
-    const sections = document.querySelectorAll('.markdown-preview-section')
-    sections.forEach((section) => {
-      this.processCodeGroupsInSection(section)
+  /**
+   * 使用 MutationObserver 监听预览区域的变化，替代高性能损耗的 setInterval 轮询
+   */
+  private initObserver() {
+    this.observer = new MutationObserver((mutations) => {
+      let needsScan = false
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          needsScan = true
+          break
+        }
+      }
+      if (needsScan) {
+        this.requestGlobalScan()
+      }
     })
+
+    // 监听 body 确保即便在不同 Tab 切换时也能捕捉到
+    this.observer.observe(document.body, { childList: true, subtree: true })
+    
+    // 同时也注册到插件的卸载逻辑中
+    this.plugin.register(() => this.observer?.disconnect())
+  }
+
+  private requestGlobalScan() {
+    if (this.globalDebounceTimer) {
+      window.clearTimeout(this.globalDebounceTimer)
+    }
+    this.globalDebounceTimer = window.setTimeout(() => {
+      this.globalDebounceTimer = null
+      const sections = document.querySelectorAll('.markdown-preview-section')
+      sections.forEach(s => this.processCodeGroupsInSection(s))
+    }, 150)
   }
 
   /**
@@ -67,14 +88,12 @@ export class ContainerParser {
     // ① 单块段落容器 (info / tip / warning / danger)
     this.processParagraphContainers(el)
 
-    // ② code-group 跨块容器：延迟扫描整个页面（等所有块渲染完毕）
-    if (this.globalDebounceTimer) {
-      window.clearTimeout(this.globalDebounceTimer)
+    // ② code-group 跨块容器触发逻辑
+    // 如果发现标记或代码块，立即请求一次带防抖的全局扫描
+    const html = el.innerHTML
+    if (html.includes(':::') || el.querySelector('pre > code')) {
+      this.requestGlobalScan()
     }
-    this.globalDebounceTimer = window.setTimeout(() => {
-      this.globalDebounceTimer = null
-      this.scanAllSections()
-    }, 150)
   }
 
   // ─────────────────────────────────────────────
