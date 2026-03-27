@@ -5,6 +5,7 @@ import { ContainerParser } from './features/containerParser'
 import { CodeEnhancer } from './features/codeEnhancer'
 import { LinkProcessor } from './features/linkProcessor'
 import { EmojiProcessor } from './features/emojiProcessor'
+import { BadgeProcessor } from './features/badgeProcessor'
 
 export default class VitePressThemePlugin extends Plugin {
   settings!: VitePressSettings
@@ -12,6 +13,7 @@ export default class VitePressThemePlugin extends Plugin {
   public codeEnhancer!: CodeEnhancer
   private linkProcessor!: LinkProcessor
   private emojiProcessor!: EmojiProcessor
+  private badgeProcessor!: BadgeProcessor
   private styleElement: HTMLStyleElement | null = null
 
   async onload() {
@@ -22,6 +24,7 @@ export default class VitePressThemePlugin extends Plugin {
     this.codeEnhancer = new CodeEnhancer(this)
     this.linkProcessor = new LinkProcessor(this)
     this.emojiProcessor = new EmojiProcessor(this.app)
+    this.badgeProcessor = new BadgeProcessor(this)
 
     // Add settings tab
     this.addSettingTab(new VitePressSettingTab(this.app, this))
@@ -35,6 +38,7 @@ export default class VitePressThemePlugin extends Plugin {
       this.codeEnhancer.enhanceCodeBlocks(el, ctx)
       this.linkProcessor.processLinks(el, ctx)
       this.emojiProcessor.processEmoji(el, ctx)
+      this.badgeProcessor.processBadges(el, ctx)
     })
 
     // Add theme class to body
@@ -105,10 +109,11 @@ export default class VitePressThemePlugin extends Plugin {
       css += this.getCodeGroupStyles()
     }
 
-    // Always apply table and callout styles
+    // Always apply table, callout, emoji, and badge styles
     css += this.getTableStyles()
     css += this.getCalloutStyles()
     css += this.getEmojiStyles()
+    css += this.getBadgeStyles()
 
     this.styleElement.textContent = css
     document.head.appendChild(this.styleElement)
@@ -363,6 +368,49 @@ export default class VitePressThemePlugin extends Plugin {
 
       .vp-details-content p {
         margin: 0.5em 0;
+      }
+    `
+  }
+
+  /**
+   * Get VitePress Badge styles
+   */
+  private getBadgeStyles(): string {
+    return `
+      /* VitePress Badges */
+      .vp-badge {
+        display: inline-block;
+        margin-left: 4px;
+        border-radius: 12px;
+        padding: 0 10px;
+        line-height: 22px;
+        font-size: 11px;
+        font-weight: 500;
+        transform: translateY(-1px);
+      }
+
+      .vp-badge-info {
+        background-color: rgba(var(--callout-info), 0.1);
+        color: rgb(var(--callout-info));
+        border: 1px solid rgba(var(--callout-info), 0.25);
+      }
+
+      .vp-badge-tip {
+        background-color: rgba(var(--callout-tip), 0.1);
+        color: rgb(var(--callout-tip));
+        border: 1px solid rgba(var(--callout-tip), 0.25);
+      }
+
+      .vp-badge-warning {
+        background-color: rgba(var(--callout-warning), 0.1);
+        color: rgb(var(--callout-warning));
+        border: 1px solid rgba(var(--callout-warning), 0.25);
+      }
+
+      .vp-badge-danger {
+        background-color: rgba(var(--callout-error), 0.1);
+        color: rgb(var(--callout-error));
+        border: 1px solid rgba(var(--callout-error), 0.25);
       }
     `
   }
