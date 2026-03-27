@@ -297,16 +297,27 @@ export class ContainerParser {
   private processParagraphContainers(el: HTMLElement): void {
     const paragraphs = el.querySelectorAll('p')
     paragraphs.forEach((p) => {
-      const html = p.innerHTML
-      // 跳过 code-group（由 tryAssembleCodeGroup 处理）
-      if (/^(?::\s*)?:::\s*code-group/i.test(html)) return
+      const html = p.innerHTML.trim()
+      if (!html || /^(?::\s*)?:::\s*code-group/i.test(html)) return
 
-      const containerMatch = html.match(/^(?::\s*)?:::\s*(\w+)(?:\s+([^<\n]+))?\s*(?:<br\s*\/?>|\n)?([\\s\S]*?)<br\s*\/?>\s*:::\s*$/i)
-      if (!containerMatch) return
+      const lines = html.split(/(?:<br[^>]*>|\n)/i)
+      if (lines.length < 3) return
 
-      const [, type, customTitle, content] = containerMatch
-      const typeLower = type.toLowerCase()
+      // Stripping all HTML tags safely guarantees we see the text content even if Obsidian wrapped the formatting!
+      const pureFirstLine = lines[0].replace(/<[^>]+>/g, '').trim()
+      const pureLastLine = lines[lines.length - 1].replace(/<[^>]+>/g, '').trim()
+
+      const typeMatch = pureFirstLine.match(/^\s*(?::\s*)?:::\s*([a-zA-Z]+)(.*)?$/i)
+      if (!typeMatch) return
+
+      const typeLower = typeMatch[1].toLowerCase()
       if (!this.labelMap[typeLower]) return
+      
+      // End boundary match, completely immune to suffix spaces or formatting spans
+      if (!pureLastLine.endsWith(':::')) return
+
+      const customTitle = typeMatch[2]
+      const content = lines.slice(1, lines.length - 1).join('<br>')
 
       const containerEl = this.createContainerElement(typeLower, customTitle?.trim())
       const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
@@ -320,7 +331,12 @@ export class ContainerParser {
       })
 
       const wrapper = this.getSectionLevelEl(p) || p
-      wrapper.replaceWith(containerEl)
+      if (wrapper.parentElement) {
+        wrapper.replaceWith(containerEl)
+      } else {
+        wrapper.innerHTML = ''
+        wrapper.appendChild(containerEl)
+      }
     })
   }
 
