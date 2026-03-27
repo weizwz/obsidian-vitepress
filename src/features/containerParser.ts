@@ -26,12 +26,13 @@ export class ContainerParser {
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>'
   }
 
-  // GitHub-style label mapping (仅四种 VitePress 原生容器类型)
+  // GitHub-style label mapping (四种提示容器 + details 折叠容器)
   private labelMap: Record<string, string> = {
     info: '提示',
     tip: '建议',
     warning: '警告',
-    danger: '危险'
+    danger: '危险',
+    details: '详细信息'
   }
 
   private globalDebounceTimer: number | null = null
@@ -102,10 +103,18 @@ export class ContainerParser {
       // 尾行必须以 ::: 结束
       if (!pureLastLine.endsWith(':::')) return
 
-      const customTitle = typeMatch[2]
-      const content = lines.slice(1, lines.length - 1).join('<br>')
+      const customTitle = typeMatch[2]?.trim()
+      const contentLines = lines.slice(1, lines.length - 1)
 
-      const containerEl = this.createContainerElement(typeLower, customTitle?.trim())
+      // details 类型：渲染为原生 <details>/<summary> 结构
+      if (typeLower === 'details') {
+        const detailsEl = this.createDetailsElement(customTitle, contentLines)
+        p.replaceWith(detailsEl)
+        return
+      }
+
+      const content = contentLines.join('<br>')
+      const containerEl = this.createContainerElement(typeLower, customTitle)
       const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
 
       content.split(/<br\s*\/?>\s*/i).forEach((line) => {
@@ -302,6 +311,34 @@ export class ContainerParser {
   // ─────────────────────────────────────────────
   // DOM 工厂
   // ─────────────────────────────────────────────
+
+  /**
+   * 创建 VitePress details 折叠容器（原生 <details>/<summary>）
+   */
+  private createDetailsElement(customTitle: string | undefined, contentLines: string[]): HTMLDetailsElement {
+    const detailsEl = document.createElement('details')
+    detailsEl.className = 'vp-details'
+
+    const summaryEl = document.createElement('summary')
+    summaryEl.className = 'vp-details-summary'
+    summaryEl.textContent = customTitle || this.labelMap['details']
+    detailsEl.appendChild(summaryEl)
+
+    const contentEl = document.createElement('div')
+    contentEl.className = 'vp-details-content'
+
+    const joinedContent = contentLines.join('<br>')
+    joinedContent.split(/<br\s*\/?>\s*/i).forEach((line) => {
+      const trimmed = line.trim()
+      if (!trimmed) return
+      const lineP = document.createElement('p')
+      lineP.innerHTML = trimmed
+      contentEl.appendChild(lineP)
+    })
+
+    detailsEl.appendChild(contentEl)
+    return detailsEl
+  }
 
   private createContainerElement(type: string, customTitle?: string): HTMLElement {
     const typeLower = type.toLowerCase()

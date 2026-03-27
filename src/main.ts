@@ -303,6 +303,67 @@ export default class VitePressThemePlugin extends Plugin {
         line-height: 1.6;
         margin: 0.5em 0;
       }
+
+      /* VitePress ::: details 折叠容器 */
+      .vp-details {
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 8px;
+        margin: 1em 0;
+        overflow: hidden;
+        background: var(--code-background);
+      }
+
+      .vp-details-summary {
+        list-style: none;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-normal);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        user-select: none;
+        transition: background-color 0.2s;
+      }
+
+      .vp-details-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .vp-details-summary::before {
+        content: '▶';
+        font-size: 0.7em;
+        color: var(--text-muted);
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .vp-details[open] > .vp-details-summary::before {
+        transform: rotate(90deg);
+      }
+
+      .vp-details-summary:hover {
+        background: var(--background-modifier-hover);
+      }
+
+      .vp-details-content {
+        padding: 12px 20px 16px;
+        border-top: 1px solid var(--background-modifier-border);
+        color: var(--text-normal);
+        line-height: 1.6;
+      }
+
+      .vp-details-content > *:first-child {
+        margin-top: 0;
+      }
+
+      .vp-details-content > *:last-child {
+        margin-bottom: 0;
+      }
+
+      .vp-details-content p {
+        margin: 0.5em 0;
+      }
     `
   }
 
@@ -319,6 +380,7 @@ export default class VitePressThemePlugin extends Plugin {
         border-radius: 8px;
         overflow: hidden;
         margin: 16px 0;
+        border: 1px solid var(--background-modifier-border);
       }
 
       .vp-code-block-header {
@@ -504,6 +566,7 @@ export default class VitePressThemePlugin extends Plugin {
         overflow: hidden;
         margin: 16px 0;
         background: var(--code-background);
+        border: 1px solid var(--background-modifier-border);
       }
 
       .vp-code-group .vp-code-block-header {
@@ -512,6 +575,7 @@ export default class VitePressThemePlugin extends Plugin {
 
       .vp-code-group .vp-code-block {
         margin: 0;
+        border: none;
       }
 
       .vp-code-group-tabs {
