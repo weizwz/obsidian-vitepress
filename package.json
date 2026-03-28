@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-vitepress",
+  "name": "vitepress-theme",
   "version": "1.0.0",
-  "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography",
+  "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography.",
   "author": "weizwz",
   "homepage": "https://github.com/weizwz/obsidian-vitepress",
   "repository": {
