@@ -26,7 +26,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         .onChange(async (value) => {
           this.plugin.settings.enableCodeBlocks = value;
           await this.plugin.saveSettings();
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }));
 
     new Setting(containerEl)
@@ -37,7 +37,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         .onChange(async (value) => {
           this.plugin.settings.enableContainers = value;
           await this.plugin.saveSettings();
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }));
 
     new Setting(containerEl)
@@ -48,7 +48,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         .onChange(async (value) => {
           this.plugin.settings.enableTypography = value;
           await this.plugin.saveSettings();
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }));
 
     // Feature Settings
@@ -105,7 +105,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         .onChange(async (value) => {
           this.plugin.settings.followObsidianTheme = value;
           await this.plugin.saveSettings();
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }));
 
     new Setting(containerEl)
@@ -116,7 +116,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         .onChange(async (value) => {
           this.plugin.settings.customPrimaryColor = value;
           await this.plugin.saveSettings();
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }))
       .setDisabled(this.plugin.settings.followObsidianTheme);
 
@@ -142,7 +142,7 @@ export class VitePressSettingTab extends PluginSettingTab {
       .addButton(button => button
         .setButtonText('Reload')
         .onClick(() => {
-          this.plugin.applyStyles();
+          this.plugin.updateTheme();
         }));
   }
 }

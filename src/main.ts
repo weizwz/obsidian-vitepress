@@ -28,8 +28,8 @@ export default class VitePressThemePlugin extends Plugin {
     // Add settings tab
     this.addSettingTab(new VitePressSettingTab(this.app, this))
 
-    // Apply styles
-    this.applyStyles()
+    // Update theme based on settings
+    this.updateTheme()
 
     // Register post processors
     this.registerMarkdownPostProcessor((el, ctx) => {
@@ -46,7 +46,7 @@ export default class VitePressThemePlugin extends Plugin {
     // Listen for theme changes
     this.registerEvent(
       this.app.workspace.on('css-change', () => {
-        this.applyStyles()
+        this.updateTheme()
       })
     )
 
@@ -54,8 +54,7 @@ export default class VitePressThemePlugin extends Plugin {
   }
 
   onunload() {
-    this.removeBodyClasses()
-    this.removeDynamicColors()
+    this.removeTheme()
 
     // Remove theme class
     document.body.classList.remove('vitepress-theme')
@@ -72,36 +71,26 @@ export default class VitePressThemePlugin extends Plugin {
   }
 
   /**
-   * Apply CSS styles based on settings
+   * Update DOM classes and variables based on settings
    */
-  applyStyles() {
-    this.applyBodyClasses()
-    this.applyDynamicColors()
-  }
-
-  applyBodyClasses() {
+  updateTheme() {
     const list = document.body.classList
     list.toggle('vp-feature-typography', this.settings.enableTypography)
     list.toggle('vp-feature-containers', this.settings.enableContainers)
     list.toggle('vp-feature-code-blocks', this.settings.enableCodeBlocks)
-  }
 
-  applyDynamicColors() {
     const accent = this.settings.followObsidianTheme ? 'var(--accent-color)' : this.settings.customPrimaryColor
     document.body.style.setProperty('--vp-c-brand-1', accent)
     document.body.style.setProperty('--vp-c-brand-2', accent)
     document.body.style.setProperty('--vp-c-brand-3', accent)
   }
 
-  removeBodyClasses() {
+  removeTheme() {
     document.body.classList.remove(
       'vp-feature-typography',
       'vp-feature-containers',
       'vp-feature-code-blocks'
     )
-  }
-
-  removeDynamicColors() {
     document.body.style.removeProperty('--vp-c-brand-1')
     document.body.style.removeProperty('--vp-c-brand-2')
     document.body.style.removeProperty('--vp-c-brand-3')
