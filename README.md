@@ -3,7 +3,7 @@
 A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing the modern documentation aesthetic and syntax to your notes.
 
 **[中文文档](./README.zh.md)**
- 
+
 ![Preview](src/asset/images/preview.png)
 
 ## Features
@@ -101,15 +101,15 @@ VitePress <Badge type="danger" text="caution" />
 
 ## Compatibility
 
-| Feature | Reading Mode | Live Preview | Source Mode |
-|---------|:-----------:|:------------:|:-----------:|
-| Alert containers (info/tip/warning/danger) | ✅ | ❌ | ❌ |
-| Collapsible container (details) | ✅ | ❌ | ❌ |
-| Badge component (Badge) | ✅ | ❌ | ❌ |
-| Code group (code-group) | ✅ | ❌ | ❌ |
-| Code block enhancements | ✅ | ❌ | ❌ |
-| Callout styles | ✅ | ✅ | ❌ |
-| Table / Typography / Links | ✅ | ✅ | ❌ |
+| Feature                                    | Reading Mode | Live Preview | Source Mode |
+| ------------------------------------------ | :----------: | :----------: | :---------: |
+| Alert containers (info/tip/warning/danger) |      ✅      |      ❌      |     ❌      |
+| Collapsible container (details)            |      ✅      |      ❌      |     ❌      |
+| Badge component (Badge)                    |      ✅      |      ❌      |     ❌      |
+| Code group (code-group)                    |      ✅      |      ❌      |     ❌      |
+| Code block enhancements                    |      ✅      |      ❌      |     ❌      |
+| Callout styles                             |      ✅      |      ✅      |     ❌      |
+| Table / Typography / Links                 |      ✅      |      ✅      |     ❌      |
 
 > **Note**: VitePress-specific syntax (`:::` containers) is parsed and rendered in Obsidian Reading Mode via Post Processor. Live Preview and Source Mode are intentionally left unprocessed to preserve raw text for editing.
 
@@ -147,16 +147,16 @@ pnpm run build
 
 ## Settings
 
-| Setting | Description | Default |
-|---------|-------------|:-------:|
-| Enable code block styles | Language labels and filename display | ✅ |
-| Enable container styles | Alert container and details CSS | ✅ |
-| Enable typography styles | Heading, link, and layout styles | ✅ |
-| Parse VitePress containers | Parse `:::` syntax and render containers | ✅ |
-| Process links | External link icons and internal link handling | ✅ |
-| Follow Obsidian theme | Auto-adapt to Obsidian's color theme | ✅ |
-| Custom primary color | Custom brand color (when not following theme) | `#3451b2` |
-| Debug mode | Enable console debug logging | ❌ |
+| Setting                    | Description                                    |  Default  |
+| -------------------------- | ---------------------------------------------- | :-------: |
+| Enable code block styles   | Language labels and filename display           |    ✅     |
+| Enable container styles    | Alert container and details CSS                |    ✅     |
+| Enable typography styles   | Heading, link, and layout styles               |    ✅     |
+| Parse VitePress containers | Parse `:::` syntax and render containers       |    ✅     |
+| Process links              | External link icons and internal link handling |    ✅     |
+| Follow Obsidian theme      | Auto-adapt to Obsidian's color theme           |    ✅     |
+| Custom primary color       | Custom brand color (when not following theme)  | `#409eff` |
+| Debug mode                 | Enable console debug logging                   |    ❌     |
 
 ## License
 

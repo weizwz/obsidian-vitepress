@@ -3,7 +3,7 @@
 一个为 Obsidian 设计的 [VitePress](https://vitepress.dev/) 风格主题插件，让你在 Obsidian 中获得与 VitePress 文档站点一致的阅读体验——包括语法容器、折叠容器、代码组等特性。
 
 **[English Documentation](./README.md)**
- 
+
 ![预览](src/asset/images/preview.png)
 
 ## 功能特性
@@ -101,15 +101,15 @@ VitePress <Badge type="danger" text="caution" />
 
 ## 兼容性说明
 
-| 特性 | 阅读模式 | 实时预览 | 源码模式 |
-|------|:------:|:------:|:------:|
-| 提示容器（info/tip/warning/danger） | ✅ | ❌ | ❌ |
-| 折叠容器（details） | ✅ | ❌ | ❌ |
-| 徽章组件（Badge） | ✅ | ❌ | ❌ |
-| 代码块组（code-group） | ✅ | ❌ | ❌ |
-| 代码块增强（语言标签/文件名） | ✅ | ❌ | ❌ |
-| Callout 样式 | ✅ | ✅ | ❌ |
-| 表格 / 排版 / 外链 | ✅ | ✅ | ❌ |
+| 特性                                | 阅读模式 | 实时预览 | 源码模式 |
+| ----------------------------------- | :------: | :------: | :------: |
+| 提示容器（info/tip/warning/danger） |    ✅    |    ❌    |    ❌    |
+| 折叠容器（details）                 |    ✅    |    ❌    |    ❌    |
+| 徽章组件（Badge）                   |    ✅    |    ❌    |    ❌    |
+| 代码块组（code-group）              |    ✅    |    ❌    |    ❌    |
+| 代码块增强（语言标签/文件名）       |    ✅    |    ❌    |    ❌    |
+| Callout 样式                        |    ✅    |    ✅    |    ❌    |
+| 表格 / 排版 / 外链                  |    ✅    |    ✅    |    ❌    |
 
 > **说明**：VitePress 特有语法（`:::` 容器）在 Obsidian 阅读模式下通过 Post Processor 解析渲染，实时预览和源码模式不作处理，保留原始文本以方便编辑。
 
@@ -147,16 +147,16 @@ pnpm run build
 
 ## 设置项
 
-| 设置 | 说明 | 默认值 |
-|------|------|:------:|
-| Enable code block styles | 代码块增强（语言标签、文件名） | ✅ |
-| Enable container styles | 提示容器与折叠容器 CSS | ✅ |
-| Enable typography styles | 排版样式（标题、链接等） | ✅ |
-| Parse VitePress containers | 解析 `:::` 语法并渲染容器 | ✅ |
-| Process links | 外链图标与内链处理 | ✅ |
-| Follow Obsidian theme | 自动跟随 Obsidian 主题色 | ✅ |
-| Custom primary color | 自定义主品牌色（不跟随主题时生效） | `#3451b2` |
-| Debug mode | 启用控制台调试日志 | ❌ |
+| 设置                       | 说明                               |  默认值   |
+| -------------------------- | ---------------------------------- | :-------: |
+| Enable code block styles   | 代码块增强（语言标签、文件名）     |    ✅     |
+| Enable container styles    | 提示容器与折叠容器 CSS             |    ✅     |
+| Enable typography styles   | 排版样式（标题、链接等）           |    ✅     |
+| Parse VitePress containers | 解析 `:::` 语法并渲染容器          |    ✅     |
+| Process links              | 外链图标与内链处理                 |    ✅     |
+| Follow Obsidian theme      | 自动跟随 Obsidian 主题色           |    ✅     |
+| Custom primary color       | 自定义主品牌色（不跟随主题时生效） | `#409eff` |
+| Debug mode                 | 启用控制台调试日志                 |    ❌     |
 
 ## License
 

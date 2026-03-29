@@ -67,7 +67,7 @@ export interface VitePressSettings {
   /**
    * 自定义主品牌色（HEX 格式）
    * - 仅在 followObsidianTheme 为 false 时生效
-   * @default '#3451b2'
+   * @default '#409eff'
    */
   customPrimaryColor: string
 
@@ -89,6 +89,6 @@ export const DEFAULT_SETTINGS: VitePressSettings = {
   enableBadgeProcessor: true,
   enableEmojiProcessor: true,
   followObsidianTheme: true,
-  customPrimaryColor: '#3451b2',
-  debugMode: false,
+  customPrimaryColor: '#409eff',
+  debugMode: false
 }
