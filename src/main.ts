@@ -1,4 +1,4 @@
-import { App, Component, MarkdownPostProcessorContext, Plugin, TFile } from 'obsidian'
+import { Plugin } from 'obsidian'
 import { VitePressSettingTab } from './settings'
 import { VitePressSettings, DEFAULT_SETTINGS } from './types/settings'
 import { ContainerParser } from './features/containerParser'

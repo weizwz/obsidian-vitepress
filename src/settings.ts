@@ -1,6 +1,5 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import type VitePressThemePlugin from './main';
-import { VitePressSettings, DEFAULT_SETTINGS } from './types/settings';
 
 export class VitePressSettingTab extends PluginSettingTab {
   plugin: VitePressThemePlugin;

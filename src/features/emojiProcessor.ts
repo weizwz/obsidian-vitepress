@@ -25,14 +25,14 @@ export class EmojiProcessor {
     this.app = app;
     this.plugin = plugin;
     this.emojiMap = new Map(Object.entries(emojiData));
-    this.regex = /:([a-zA-Z0-9_+\-]+):/g;
+    this.regex = /:([a-zA-Z0-9_+-]+):/g;
   }
 
   /**
    * Process emoji shortcodes in the element
    * This runs in BOTH reading mode and live preview, but CSS controls visibility
    */
-  processEmoji(el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
+  processEmoji(el: HTMLElement, _ctx: MarkdownPostProcessorContext): void {
     if (!this.plugin.settings.enableEmojiProcessor) {
       return;
     }

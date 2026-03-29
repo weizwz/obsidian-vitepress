@@ -82,7 +82,7 @@ export class ContainerParser {
   /**
    * Post-processor entry — called once per rendered block by Obsidian
    */
-  processContainer = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
+  processContainer = (el: HTMLElement, _ctx: MarkdownPostProcessorContext) => {
     if (!this.plugin.settings.enableContainerParser) return
 
     // ① 单块段落容器 (info / tip / warning / danger)
