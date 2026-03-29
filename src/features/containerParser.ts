@@ -219,7 +219,7 @@ export class ContainerParser {
 
         if (isEnd) {
           const startEl = children[startIndex] as HTMLElement
-          const endEl = child as HTMLElement
+          const endEl = child
           const middleEls = children.slice(startIndex + 1, i) as HTMLElement[]
 
           let needsRebuild = false
