@@ -49,7 +49,7 @@ export class VitePressSettingTab extends PluginSettingTab {
           this.plugin.updateTheme();
         }));
 
-    // Feature settings
+    // Features
     new Setting(containerEl).setName('Features').setHeading();
 
     new Setting(containerEl)

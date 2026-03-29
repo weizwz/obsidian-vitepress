@@ -247,10 +247,10 @@ export class ContainerParser {
               }
             }
 
-            startEl.innerHTML = ''
+            startEl.empty()
             startEl.dataset.cgMarker = 'start'
 
-            endEl.innerHTML = ''
+            endEl.empty()
             endEl.dataset.cgMarker = 'end'
             endEl.classList.add('vp-hidden')
 
@@ -279,7 +279,7 @@ export class ContainerParser {
     let tabIndex = 0
 
     for (const wrapper of middleEls) {
-      const codeEl = wrapper.querySelector('code') as HTMLElement | null
+      const codeEl = wrapper.querySelector('code')
       if (!codeEl) {
         wrapper.classList.add('vp-hidden')
         continue
@@ -370,7 +370,12 @@ export class ContainerParser {
     
     const headerEl = containerEl.createDiv({ cls: 'vp-container-header' })
     const iconSpan = headerEl.createSpan({ cls: 'vp-container-icon' })
-    iconSpan.innerHTML = icon
+    const parser = new DOMParser()
+    const svgDoc = parser.parseFromString(icon, 'image/svg+xml')
+    const svgEl = svgDoc.documentElement
+    if (svgEl && svgEl.nodeName === 'svg') {
+      iconSpan.appendChild(svgEl)
+    }
     headerEl.createSpan({ cls: 'vp-container-title-text', text: title })
     
     containerEl.createDiv({ cls: 'vp-container-content' })
