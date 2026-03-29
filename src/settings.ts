@@ -13,10 +13,8 @@ export class VitePressSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: 'VitePress Theme Settings' });
-
-    // Style Settings
-    containerEl.createEl('h3', { text: 'Style Options' });
+    // Style options
+    new Setting(containerEl).setName('Style options').setHeading();
 
     new Setting(containerEl)
       .setName('Enable code block styles')
@@ -51,8 +49,8 @@ export class VitePressSettingTab extends PluginSettingTab {
           this.plugin.updateTheme();
         }));
 
-    // Feature Settings
-    containerEl.createEl('h3', { text: 'Features' });
+    // Feature settings
+    new Setting(containerEl).setName('Features').setHeading();
 
     new Setting(containerEl)
       .setName('Parse VitePress containers')
@@ -94,8 +92,8 @@ export class VitePressSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         }));
 
-    // Theme Settings
-    containerEl.createEl('h3', { text: 'Theme' });
+    // Theme settings
+    new Setting(containerEl).setName('Theme').setHeading();
 
     new Setting(containerEl)
       .setName('Follow Obsidian theme')
@@ -121,7 +119,7 @@ export class VitePressSettingTab extends PluginSettingTab {
       .setDisabled(this.plugin.settings.followObsidianTheme);
 
     // Debug
-    containerEl.createEl('h3', { text: 'Debug' });
+    new Setting(containerEl).setName('Debug').setHeading();
 
     new Setting(containerEl)
       .setName('Debug mode')
@@ -134,7 +132,7 @@ export class VitePressSettingTab extends PluginSettingTab {
         }));
 
     // Actions
-    containerEl.createEl('h3', { text: 'Actions' });
+    new Setting(containerEl).setName('Actions').setHeading();
 
     new Setting(containerEl)
       .setName('Reload styles')

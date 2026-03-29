@@ -99,7 +99,7 @@ export default class VitePressThemePlugin extends Plugin {
   /**
    * Log to console if debug mode is enabled
    */
-  log(...args: any[]) {
+  log(...args: unknown[]) {
     if (this.settings.debugMode) {
       console.log('[VitePress Theme]', ...args)
     }
