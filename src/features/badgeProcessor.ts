@@ -59,7 +59,7 @@ export class BadgeProcessor {
       }
     } catch (e) {
       if (this.plugin.settings.debugMode) {
-        console.error('[BadgeProcessor] Recovery failed:', e)
+        console.error('[VitePress Theme] BadgeProcessor - Recovery failed:', e)
       }
     }
   }

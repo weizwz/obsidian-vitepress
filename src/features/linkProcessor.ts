@@ -82,7 +82,7 @@ export class LinkProcessor {
       // Add click handler for line highlighting
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        this.openWithLineHighlight(filePath, parseInt(startLine), endLine ? parseInt(endLine) : undefined);
+        void this.openWithLineHighlight(filePath, parseInt(startLine), endLine ? parseInt(endLine) : undefined);
       });
     }
 
@@ -115,7 +115,7 @@ export class LinkProcessor {
 
     // Apply line highlighting (would need CodeMirror integration)
     // This is a placeholder for the implementation
-    console.log(`Highlighting lines ${startLine} to ${endLine || startLine} in ${filePath}`);
+    this.plugin.log(`LinkProcessor - Highlighting lines ${startLine} to ${endLine || startLine} in ${filePath}`);
   }
 
   /**

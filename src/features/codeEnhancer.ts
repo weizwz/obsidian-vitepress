@@ -122,7 +122,7 @@ export class CodeEnhancer {
         button.classList.remove('copied')
       }, 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      console.error('[VitePress Theme] CodeEnhancer - Failed to copy:', err)
       button.textContent = 'Failed'
       setTimeout(() => {
         button.textContent = 'Copy'
