@@ -63,7 +63,7 @@ export class LinkProcessor {
     if (!link.querySelector('.vp-external-icon')) {
       const icon = document.createElement('span');
       icon.className = 'vp-external-icon';
-      icon.innerHTML = ' ↗';
+      icon.textContent = ' ↗';
       link.appendChild(icon);
     }
   }

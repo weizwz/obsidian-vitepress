@@ -103,48 +103,77 @@ export class ContainerParser {
   private processParagraphContainers(el: HTMLElement): void {
     const paragraphs = el.querySelectorAll('p')
     paragraphs.forEach((p) => {
-      const html = p.innerHTML.trim()
-      if (!html || /^(?::\s*)?:::\s*code-group/i.test(html)) return
+      // 1. 将 p 内容拆分为行（支持 BR 和 \n）
+      const pNodes = Array.from(p.childNodes)
+      const linesOfNodes: Node[][] = []
+      let currentLine: Node[] = []
 
-      const lines = html.split(/(?:<br[^>]*>|\n)/i)
-      if (lines.length < 3) return
+      pNodes.forEach(node => {
+        if (node.nodeName === 'BR') {
+          linesOfNodes.push(currentLine)
+          currentLine = []
+        } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.includes('\n')) {
+          const textParts = node.textContent.split('\n')
+          for (let i = 0; i < textParts.length; i++) {
+            if (i > 0) {
+              linesOfNodes.push(currentLine)
+              currentLine = []
+            }
+            if (textParts[i]) {
+              currentLine.push(document.createTextNode(textParts[i]))
+            }
+          }
+        } else {
+          currentLine.push(node)
+        }
+      })
+      if (currentLine.length > 0) linesOfNodes.push(currentLine)
 
-      // 剥除首/尾行上 Obsidian 可能注入的 HTML 标签，只看纯文本
-      const pureFirstLine = lines[0].replace(/<[^>]+>/g, '').trim()
-      const pureLastLine = lines[lines.length - 1].replace(/<[^>]+>/g, '').trim()
+      if (linesOfNodes.length < 3) return
 
-      const typeMatch = pureFirstLine.match(/^\s*(?::\s*)?:::\s*([a-zA-Z]+)(.*)?$/i)
+      // 2. 解析头尾识别标志
+      const firstLineText = linesOfNodes[0].map(n => n.textContent).join('').trim()
+      const lastLineText = linesOfNodes[linesOfNodes.length - 1].map(n => n.textContent).join('').trim()
+
+      if (/^(?::\s*)?:::\s*code-group/i.test(firstLineText)) return
+
+      const typeMatch = firstLineText.match(/^\s*(?::\s*)?:::\s*([a-zA-Z]+)(.*)?$/i)
       if (!typeMatch) return
 
       const typeLower = typeMatch[1].toLowerCase()
       if (!this.labelMap[typeLower]) return
 
-      // 尾行必须以 ::: 结束
-      if (!pureLastLine.endsWith(':::')) return
+      if (!lastLineText.endsWith(':::')) return
 
       const customTitle = typeMatch[2]?.trim()
-      const contentLines = lines.slice(1, lines.length - 1)
 
-      // details 类型：渲染为原生 <details>/<summary> 结构
+      // 3. 构建容器结构
+      let containerEl: HTMLElement
+      let contentEl: HTMLElement
+
       if (typeLower === 'details') {
-        const detailsEl = this.createDetailsElement(customTitle, contentLines)
-        p.replaceWith(detailsEl)
-        return
+        containerEl = createEl('details', { cls: 'vp-details' })
+        containerEl.createEl('summary', { 
+          cls: 'vp-details-summary', 
+          text: customTitle || this.labelMap['details'] 
+        })
+        contentEl = containerEl.createDiv({ cls: 'vp-details-content' })
+      } else {
+        containerEl = this.createContainerElement(typeLower, customTitle)
+        contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
       }
 
-      const content = contentLines.join('<br>')
-      const containerEl = this.createContainerElement(typeLower, customTitle)
-      const contentEl = containerEl.querySelector('.vp-container-content') as HTMLElement
+      // 4. 重组中间内容，克隆原生 Node 保障内部格式与事件
+      for (let i = 1; i < linesOfNodes.length - 1; i++) {
+        const lineNodes = linesOfNodes[i]
+        const isEmpty = lineNodes.every(n => n.nodeType === Node.TEXT_NODE && !n.textContent?.trim())
+        if (isEmpty) continue
+        
+        const lineP = contentEl.createEl('p')
+        lineNodes.forEach(node => lineP.appendChild(node.cloneNode(true)))
+      }
 
-      content.split(/<br\s*\/?>\s*/i).forEach((line) => {
-        const trimmed = line.trim()
-        if (!trimmed) return
-        const lineP = document.createElement('p')
-        lineP.innerHTML = trimmed
-        contentEl.appendChild(lineP)
-      })
-
-      // 直接替换 `p` 本身（p 是从 el.querySelectorAll 得到的，必然有父级节点）
+      // 5. 将旧段落直接替换
       p.replaceWith(containerEl)
     })
   }
@@ -331,49 +360,21 @@ export class ContainerParser {
   // DOM 工厂
   // ─────────────────────────────────────────────
 
-  /**
-   * 创建 VitePress details 折叠容器（原生 <details>/<summary>）
-   */
-  private createDetailsElement(customTitle: string | undefined, contentLines: string[]): HTMLDetailsElement {
-    const detailsEl = document.createElement('details')
-    detailsEl.className = 'vp-details'
-
-    const summaryEl = document.createElement('summary')
-    summaryEl.className = 'vp-details-summary'
-    summaryEl.textContent = customTitle || this.labelMap['details']
-    detailsEl.appendChild(summaryEl)
-
-    const contentEl = document.createElement('div')
-    contentEl.className = 'vp-details-content'
-
-    const joinedContent = contentLines.join('<br>')
-    joinedContent.split(/<br\s*\/?>\s*/i).forEach((line) => {
-      const trimmed = line.trim()
-      if (!trimmed) return
-      const lineP = document.createElement('p')
-      lineP.innerHTML = trimmed
-      contentEl.appendChild(lineP)
-    })
-
-    detailsEl.appendChild(contentEl)
-    return detailsEl
-  }
-
   private createContainerElement(type: string, customTitle?: string): HTMLElement {
     const typeLower = type.toLowerCase()
     const icon = this.svgIcons[typeLower] || ''
     const defaultLabel = this.labelMap[typeLower] || typeLower
     const title = customTitle || defaultLabel
 
-    const containerEl = document.createElement('div')
-    containerEl.className = `vp-container vp-${typeLower}`
-    containerEl.innerHTML = `
-      <div class="vp-container-header">
-        <span class="vp-container-icon">${icon}</span>
-        <span class="vp-container-title-text">${title}</span>
-      </div>
-      <div class="vp-container-content"></div>
-    `
+    const containerEl = createDiv({ cls: `vp-container vp-${typeLower}` })
+    
+    const headerEl = containerEl.createDiv({ cls: 'vp-container-header' })
+    const iconSpan = headerEl.createSpan({ cls: 'vp-container-icon' })
+    iconSpan.innerHTML = icon
+    headerEl.createSpan({ cls: 'vp-container-title-text', text: title })
+    
+    containerEl.createDiv({ cls: 'vp-container-content' })
+    
     return containerEl
   }
 }
