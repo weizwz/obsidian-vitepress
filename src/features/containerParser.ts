@@ -198,11 +198,11 @@ export class ContainerParser {
 
           if (!existingGroup) {
             needsRebuild = true
-          } else if (endEl.dataset.cgMarker !== 'end' || endEl.style.display !== 'none') {
+          } else if (endEl.dataset.cgMarker !== 'end' || !endEl.classList.contains('vp-hidden')) {
             needsRebuild = true
           } else {
             for (const m of middleEls) {
-              if (m.style.display !== 'none') {
+              if (!m.classList.contains('vp-hidden')) {
                 needsRebuild = true
                 break
               }
@@ -223,7 +223,7 @@ export class ContainerParser {
 
             endEl.innerHTML = ''
             endEl.dataset.cgMarker = 'end'
-            endEl.style.display = 'none'
+            endEl.classList.add('vp-hidden')
 
             this.buildCodeGroup(startEl, middleEls, activeIndex)
           }
@@ -252,13 +252,13 @@ export class ContainerParser {
     for (const wrapper of middleEls) {
       const codeEl = wrapper.querySelector('code') as HTMLElement | null
       if (!codeEl) {
-        wrapper.style.display = 'none'
+        wrapper.classList.add('vp-hidden')
         continue
       }
 
       const preEl = codeEl.closest('pre') as HTMLElement | null
       if (!preEl) {
-        wrapper.style.display = 'none'
+        wrapper.classList.add('vp-hidden')
         continue
       }
 
@@ -268,7 +268,7 @@ export class ContainerParser {
       const rawPreClone = preEl.cloneNode(true) as HTMLElement
 
       // 隐藏原始节点（保留在 DOM 树中供 Obsidian 内部使用）
-      wrapper.style.display = 'none'
+      wrapper.classList.add('vp-hidden')
 
       const tabEl = document.createElement('button')
       tabEl.className = `vp-code-group-tab${tabIndex === activeIndex ? ' active' : ''}`

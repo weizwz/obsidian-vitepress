@@ -507,3 +507,19 @@ code .vp-emoji-source,
 .HyperMD-codeblock .vp-emoji-source {
   display: inline !important;
 }
+
+/* ────────────────────────────────────────────────────────
+ * Utility Classes
+ * ──────────────────────────────────────────────────────── */
+.vp-hidden {
+  display: none !important;
+}
+
+.vp-relative {
+  position: relative;
+}
+
+.vp-external-icon {
+  font-size: 0.8em;
+  opacity: 0.6;
+}

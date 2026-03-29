@@ -1,4 +1,4 @@
-import { App, TFile } from 'obsidian';
+import { App, TFile, MarkdownPostProcessorContext } from 'obsidian';
 import type VitePressThemePlugin from '../main';
 
 /**
@@ -19,7 +19,7 @@ export class LinkProcessor {
   /**
    * Post-processor for links
    */
-  processLinks = (el: HTMLElement, ctx: any): void => {
+  processLinks = (el: HTMLElement, ctx: MarkdownPostProcessorContext): void => {
     if (!this.plugin.settings.enableLinkProcessing) return;
 
     const links = el.querySelectorAll('a');
@@ -29,7 +29,7 @@ export class LinkProcessor {
   /**
    * Enhance a single link
    */
-  private enhanceLink(link: HTMLAnchorElement, ctx: any): void {
+  private enhanceLink(link: HTMLAnchorElement, ctx: MarkdownPostProcessorContext): void {
     const href = link.getAttribute('href');
     if (!href) return;
 
@@ -64,8 +64,6 @@ export class LinkProcessor {
       const icon = document.createElement('span');
       icon.className = 'vp-external-icon';
       icon.innerHTML = ' ↗';
-      icon.style.fontSize = '0.8em';
-      icon.style.opacity = '0.6';
       link.appendChild(icon);
     }
   }
@@ -73,7 +71,7 @@ export class LinkProcessor {
   /**
    * Process internal links with special handling
    */
-  private processInternalLink(link: HTMLAnchorElement, ctx: any): void {
+  private processInternalLink(link: HTMLAnchorElement, ctx: MarkdownPostProcessorContext): void {
     // Check for line highlighting syntax: file.md#L10-L15
     const match = link.getAttribute('href')?.match(/^(.*)#L(\d+)(?:-L(\d+))?$/);
     if (match) {

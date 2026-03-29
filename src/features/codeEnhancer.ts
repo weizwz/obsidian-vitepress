@@ -155,8 +155,7 @@ export class CodeEnhancer {
 
     const wrapper = pre.closest('.vp-code-block') as HTMLElement
     if (wrapper) {
-      wrapper.classList.add('has-line-numbers')
-      wrapper.style.position = 'relative'
+      wrapper.classList.add('has-line-numbers', 'vp-relative')
       wrapper.insertBefore(lineNumbers, pre)
     }
   }
