@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { copyFileSync } from 'fs';
+import { copyFileSync, existsSync } from 'fs';
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
@@ -32,13 +32,20 @@ export default defineConfig(({ mode }) => {
     css: {
       modules: false,
     },
-    // 每次构建完成后将 main.js 复制到根目录（Obsidian 插件要求）
+    // 每次构建完成后将样式和配置同步至 dist 目录，以供打包分发
     plugins: [{
-      name: 'copy-to-root',
+      name: 'sync-assets-to-dist',
       closeBundle() {
         try {
-          copyFileSync('dist/main.js', 'main.js');
-          console.log('✓ Copied dist/main.js → main.js');
+          // 将根目录下静态配置与样式同步至 dist 目录
+          if (existsSync('styles.css')) {
+            copyFileSync('styles.css', 'dist/styles.css');
+            console.log('✓ Copied styles.css → dist/styles.css');
+          }
+          if (existsSync('manifest.json')) {
+            copyFileSync('manifest.json', 'dist/manifest.json');
+            console.log('✓ Copied manifest.json → dist/manifest.json');
+          }
         } catch (e) {
           console.error('Failed to copy:', e);
         }
