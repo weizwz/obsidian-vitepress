@@ -6,7 +6,6 @@ pnpm-lock.yaml
 
 # Build outputs (only keep in release)
 main.js
-styles.css
 *.map
 dist/
 
@@ -34,3 +33,6 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# agent markdown
+.agents/markdown/
