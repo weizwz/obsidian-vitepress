@@ -4,8 +4,6 @@
 
 **[English Documentation](./README.md)**
 
-![预览](src/asset/images/preview.png)
-
 ## 功能特性
 
 ### 提示容器
@@ -30,6 +28,8 @@
 :::
 ```
 
+![预览1](src/asset/images/preview1.png)
+
 ### 折叠容器
 
 将 VitePress 原生 `::: details` 语法渲染为可点击展开的折叠块（原生 `<details>/<summary>` 元素）：
@@ -39,6 +39,8 @@
 这是折叠的内容，点击标题可展开
 :::
 ```
+
+![预览2](src/asset/images/preview2.png)
 
 ### 代码块增强
 
@@ -51,6 +53,8 @@ export default {
 }
 ```
 ````
+
+![预览3](src/asset/images/preview3.png)
 
 ### 代码块组
 
@@ -70,6 +74,8 @@ const msg = 'hello'
 :::
 ````
 
+![预览4](src/asset/images/preview4.png)
+
 ### Obsidian Callout 适配
 
 原生的 Obsidian Callout 会自动适配 VitePress 配色风格：
@@ -82,6 +88,8 @@ const msg = 'hello'
 > 这是一个 warning callout
 ```
 
+![预览5](src/asset/images/preview5.png)
+
 ### 徽章组件
 
 支持 VitePress 风格的行内徽章（Badge），常用于标注版本或状态：
@@ -93,11 +101,22 @@ VitePress <Badge type="warning" text="beta" />
 VitePress <Badge type="danger" text="caution" />
 ```
 
+![预览6](src/asset/images/preview6.png)
+
+### Emoji
+
+支持 VitePress Emoji，鼠标悬停时会显示 Emoji 对应的代码：
+
+```markdown
+:cn: :eight: :seven:
+```
+
+![预览7](src/asset/images/preview7.png)
+
 ### 其他样式
 
 - **排版** — 标题层级、行高、链接样式与 VitePress 保持一致
 - **表格** — 统一边框与背景色
-- **外链图标** — 外部链接自动添加 ↗ 标识
 
 ## 兼容性说明
 

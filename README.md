@@ -4,8 +4,6 @@ A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing 
 
 **[中文文档](./README.zh.md)**
 
-![Preview](src/asset/images/preview.png)
-
 ## Features
 
 ### Alert Containers
@@ -30,6 +28,8 @@ This is a danger alert
 :::
 ```
 
+![Preview1](src/asset/images/preview1.png)
+
 ### Collapsible Container
 
 Renders `::: details` as a native clickable `<details>/<summary>` element:
@@ -39,6 +39,8 @@ Renders `::: details` as a native clickable `<details>/<summary>` element:
 This content is hidden until clicked
 :::
 ```
+
+![Preview2](src/asset/images/preview2.png)
 
 ### Enhanced Code Blocks
 
@@ -51,6 +53,8 @@ export default {
 }
 ```
 ````
+
+![Preview3](src/asset/images/preview3.png)
 
 ### Code Groups
 
@@ -70,6 +74,8 @@ const msg = 'hello'
 :::
 ````
 
+![Preview4](src/asset/images/preview4.png)
+
 ### Obsidian Callout Adaptation
 
 Native Obsidian Callouts are automatically styled to match VitePress colors:
@@ -82,6 +88,8 @@ Native Obsidian Callouts are automatically styled to match VitePress colors:
 > This is a warning callout
 ```
 
+![Preview5](src/asset/images/preview5.png)
+
 ### Badge Component
 
 VitePress-style badges for marking status or versions:
@@ -93,11 +101,22 @@ VitePress <Badge type="warning" text="beta" />
 VitePress <Badge type="danger" text="caution" />
 ```
 
+![Preview6](src/asset/images/preview6.png)
+
+### Emoji
+
+Support VitePress Emoji, and put the mouse on it to display the code corresponding to Emoji:
+
+```markdown
+:cn: :eight: :seven:
+```
+
+![Preview7](src/asset/images/preview7.png)
+
 ### Additional Styles
 
 - **Typography** — Headings, line-height, and link styles consistent with VitePress
 - **Tables** — Unified borders and background colors
-- **External Link Icons** — External links automatically get a ↗ indicator
 
 ## Compatibility
 
