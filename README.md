@@ -128,7 +128,7 @@ Support VitePress Emoji, and put the mouse on it to display the code correspondi
 | Code group (code-group)                    |      ✅      |      ❌      |     ❌      |
 | Code block enhancements                    |      ✅      |      ❌      |     ❌      |
 | Callout styles                             |      ✅      |      ✅      |     ❌      |
-| Table / Typography / Links                 |      ✅      |      ✅      |     ❌      |
+| Table / Typography                         |      ✅      |      ✅      |     ❌      |
 
 > **Note**: VitePress-specific syntax (`:::` containers) is parsed and rendered in Obsidian Reading Mode via Post Processor. Live Preview and Source Mode are intentionally left unprocessed to preserve raw text for editing.
 

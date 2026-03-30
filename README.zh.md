@@ -128,7 +128,7 @@ VitePress <Badge type="danger" text="caution" />
 | 代码块组（code-group）              |    ✅    |    ❌    |    ❌    |
 | 代码块增强（语言标签/文件名）       |    ✅    |    ❌    |    ❌    |
 | Callout 样式                        |    ✅    |    ✅    |    ❌    |
-| 表格 / 排版 / 外链                  |    ✅    |    ✅    |    ❌    |
+| 表格 / 排版                         |    ✅    |    ✅    |    ❌    |
 
 > **说明**：VitePress 特有语法（`:::` 容器）在 Obsidian 阅读模式下通过 Post Processor 解析渲染，实时预览和源码模式不作处理，保留原始文本以方便编辑。
 
