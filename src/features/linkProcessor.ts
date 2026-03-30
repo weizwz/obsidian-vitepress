@@ -58,14 +58,6 @@ export class LinkProcessor {
     // Set target and rel
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener noreferrer');
-
-    // Add external icon if not already present
-    if (!link.querySelector('.vp-external-icon')) {
-      const icon = document.createElement('span');
-      icon.className = 'vp-external-icon';
-      icon.textContent = ' ↗';
-      link.appendChild(icon);
-    }
   }
 
   /**
