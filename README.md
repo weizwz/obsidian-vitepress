@@ -113,9 +113,11 @@ Support VitePress Emoji, and put the mouse on it to display the code correspondi
 
 ![Preview7](src/asset/images/preview7.png)
 
+
 ### Additional Styles
 
 - **Typography** — Headings, line-height, and link styles consistent with VitePress
+- **Links** — Relative path resolution support (`./file.md`) and line highlighting references (`#L10`)
 - **Tables** — Unified borders and background colors
 
 ## Compatibility
@@ -128,7 +130,7 @@ Support VitePress Emoji, and put the mouse on it to display the code correspondi
 | Code group (code-group)                    |      ✅      |      ❌      |     ❌      |
 | Code block enhancements                    |      ✅      |      ❌      |     ❌      |
 | Callout styles                             |      ✅      |      ✅      |     ❌      |
-| Table / Typography                         |      ✅      |      ✅      |     ❌      |
+| Table / Typography / Links                 |      ✅      |      ✅      |     ❌      |
 
 > **Note**: VitePress-specific syntax (`:::` containers) is parsed and rendered in Obsidian Reading Mode via Post Processor. Live Preview and Source Mode are intentionally left unprocessed to preserve raw text for editing.
 
@@ -172,7 +174,7 @@ pnpm run build
 | Enable container styles    | Alert container and details CSS                |    ✅     |
 | Enable typography styles   | Heading, link, and layout styles               |    ✅     |
 | Parse VitePress containers | Parse `:::` syntax and render containers       |    ✅     |
-| Process links              | External link icons and internal link handling |    ✅     |
+| Process links              | Internal link resolution and cross-file references |    ✅     |
 | Follow Obsidian theme      | Auto-adapt to Obsidian's color theme           |    ✅     |
 | Custom primary color       | Custom brand color (when not following theme)  | `#409eff` |
 | Debug mode                 | Enable console debug logging                   |    ❌     |

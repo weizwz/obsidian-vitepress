@@ -113,9 +113,11 @@ VitePress <Badge type="danger" text="caution" />
 
 ![预览7](src/asset/images/preview7.png)
 
+
 ### 其他样式
 
-- **排版** — 标题层级、行高、链接样式与 VitePress 保持一致
+- **排版** — 标题层级、行高与链接样式（VitePress 风格）
+- **链接增强** — 支持相对路径转换 (`./file.md`) 与行高亮引用 (`#L10`)
 - **表格** — 统一边框与背景色
 
 ## 兼容性说明
@@ -128,7 +130,7 @@ VitePress <Badge type="danger" text="caution" />
 | 代码块组（code-group）              |    ✅    |    ❌    |    ❌    |
 | 代码块增强（语言标签/文件名）       |    ✅    |    ❌    |    ❌    |
 | Callout 样式                        |    ✅    |    ✅    |    ❌    |
-| 表格 / 排版                         |    ✅    |    ✅    |    ❌    |
+| 表格 / 排版 / 链接增强              |    ✅    |    ✅    |    ❌    |
 
 > **说明**：VitePress 特有语法（`:::` 容器）在 Obsidian 阅读模式下通过 Post Processor 解析渲染，实时预览和源码模式不作处理，保留原始文本以方便编辑。
 
@@ -172,7 +174,7 @@ pnpm run build
 | Enable container styles    | 提示容器与折叠容器 CSS             |    ✅     |
 | Enable typography styles   | 排版样式（标题、链接等）           |    ✅     |
 | Parse VitePress containers | 解析 `:::` 语法并渲染容器          |    ✅     |
-| Process links              | 外链图标与内链处理                 |    ✅     |
+| Process links              | 内链解析与跨文件行高亮引用         |    ✅     |
 | Follow Obsidian theme      | 自动跟随 Obsidian 主题色           |    ✅     |
 | Custom primary color       | 自定义主品牌色（不跟随主题时生效） | `#409eff` |
 | Debug mode                 | 启用控制台调试日志                 |    ❌     |
