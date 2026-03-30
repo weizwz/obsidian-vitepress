@@ -113,7 +113,6 @@ VitePress <Badge type="danger" text="caution" />
 
 ![预览7](src/asset/images/preview7.png)
 
-
 ### 其他样式
 
 - **排版** — 标题层级、行高与链接样式（VitePress 风格）
@@ -149,7 +148,7 @@ pnpm run build
 
 ### 手动安装
 
-1. 下载最新 Release 中的 `manifest.json` 和 `main.js`
+1. 下载最新 Release 中的 `manifest.json` 和 `main.js` 和 `styles.css`
 2. 放置到 `.obsidian/plugins/vitepress-theme/` 目录
 3. 在 Obsidian **设置 → 第三方插件** 中启用
 

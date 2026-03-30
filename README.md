@@ -113,7 +113,6 @@ Support VitePress Emoji, and put the mouse on it to display the code correspondi
 
 ![Preview7](src/asset/images/preview7.png)
 
-
 ### Additional Styles
 
 - **Typography** — Headings, line-height, and link styles consistent with VitePress
@@ -149,7 +148,7 @@ Copy `manifest.json` and `main.js` to your Obsidian vault's `.obsidian/plugins/v
 
 ### Manual Installation
 
-1. Download the latest release (`manifest.json` and `main.js`)
+1. Download the latest release (`manifest.json` and `main.js` and `styles.css`)
 2. Place them in `.obsidian/plugins/vitepress-theme/`
 3. Enable under **Settings → Community Plugins**
 
@@ -168,16 +167,16 @@ pnpm run build
 
 ## Settings
 
-| Setting                    | Description                                    |  Default  |
-| -------------------------- | ---------------------------------------------- | :-------: |
-| Enable code block styles   | Language labels and filename display           |    ✅     |
-| Enable container styles    | Alert container and details CSS                |    ✅     |
-| Enable typography styles   | Heading, link, and layout styles               |    ✅     |
-| Parse VitePress containers | Parse `:::` syntax and render containers       |    ✅     |
+| Setting                    | Description                                        |  Default  |
+| -------------------------- | -------------------------------------------------- | :-------: |
+| Enable code block styles   | Language labels and filename display               |    ✅     |
+| Enable container styles    | Alert container and details CSS                    |    ✅     |
+| Enable typography styles   | Heading, link, and layout styles                   |    ✅     |
+| Parse VitePress containers | Parse `:::` syntax and render containers           |    ✅     |
 | Process links              | Internal link resolution and cross-file references |    ✅     |
-| Follow Obsidian theme      | Auto-adapt to Obsidian's color theme           |    ✅     |
-| Custom primary color       | Custom brand color (when not following theme)  | `#409eff` |
-| Debug mode                 | Enable console debug logging                   |    ❌     |
+| Follow Obsidian theme      | Auto-adapt to Obsidian's color theme               |    ✅     |
+| Custom primary color       | Custom brand color (when not following theme)      | `#409eff` |
+| Debug mode                 | Enable console debug logging                       |    ❌     |
 
 ## License
 
