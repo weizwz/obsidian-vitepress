@@ -62,7 +62,7 @@ export class ContainerParser {
     })
 
     // 监听 body 确保即便在不同 Tab 切换时也能捕捉到
-    this.observer.observe(document.body, { childList: true, subtree: true })
+    this.observer.observe(activeDocument.body, { childList: true, subtree: true })
     
     // 同时也注册到插件的卸载逻辑中
     this.plugin.register(() => this.observer?.disconnect())
@@ -74,7 +74,7 @@ export class ContainerParser {
     }
     this.globalDebounceTimer = window.setTimeout(() => {
       this.globalDebounceTimer = null
-      const sections = document.querySelectorAll('.markdown-preview-section')
+      const sections = activeDocument.querySelectorAll('.markdown-preview-section')
       sections.forEach(s => this.processCodeGroupsInSection(s))
     }, 150)
   }
@@ -120,7 +120,7 @@ export class ContainerParser {
               currentLine = []
             }
             if (textParts[i]) {
-              currentLine.push(document.createTextNode(textParts[i]))
+              currentLine.push(activeDocument.createTextNode(textParts[i]))
             }
           }
         } else {
@@ -267,13 +267,13 @@ export class ContainerParser {
    * 组装 code-group DOM（深度 Clone 模式，不碰 Obsidian 的缓存节点树）
    */
   private buildCodeGroup(startWrapper: HTMLElement, middleEls: HTMLElement[], activeIndex = 0): void {
-    const codeGroupEl = document.createElement('div')
+    const codeGroupEl = createDiv()
     codeGroupEl.className = 'vp-code-group'
 
-    const tabsEl = document.createElement('div')
+    const tabsEl = createDiv()
     tabsEl.className = 'vp-code-group-tabs'
 
-    const contentsEl = document.createElement('div')
+    const contentsEl = createDiv()
     contentsEl.className = 'vp-code-group-contents'
 
     let tabIndex = 0
@@ -299,7 +299,7 @@ export class ContainerParser {
       // 隐藏原始节点（保留在 DOM 树中供 Obsidian 内部使用）
       wrapper.classList.add('vp-hidden')
 
-      const tabEl = document.createElement('button')
+      const tabEl = createEl('button')
       tabEl.className = `vp-code-group-tab${tabIndex === activeIndex ? ' active' : ''}`
       tabEl.textContent = filename
       tabEl.dataset.index = String(tabIndex)
@@ -314,7 +314,7 @@ export class ContainerParser {
       })
       tabsEl.appendChild(tabEl)
 
-      const contentEl = document.createElement('div')
+      const contentEl = createDiv()
       contentEl.className = `vp-code-group-content${tabIndex === activeIndex ? ' active' : ''}`
       contentEl.dataset.index = String(tabIndex)
       contentEl.appendChild(rawPreClone)

@@ -80,20 +80,20 @@ export class EmojiProcessor {
       }
 
       // Create container with dual display
-      const container = document.createElement('span');
+      const container = createSpan();
       container.className = 'vp-emoji-container';
       
       for (const part of parts) {
         if (part.type === 'emoji') {
           // Create wrapper with both emoji and source
-          const wrapper = document.createElement('span');
+          const wrapper = createSpan();
           wrapper.className = 'vp-emoji-wrapper';
           
-          const emojiSpan = document.createElement('span');
+          const emojiSpan = createSpan();
           emojiSpan.className = 'vp-emoji-display';
           emojiSpan.textContent = part.value;
           
-          const sourceSpan = document.createElement('span');
+          const sourceSpan = createSpan();
           sourceSpan.className = 'vp-emoji-source';
           sourceSpan.textContent = `:${part.shortcode}:`;
           
@@ -101,7 +101,7 @@ export class EmojiProcessor {
           wrapper.appendChild(sourceSpan);
           container.appendChild(wrapper);
         } else {
-          container.appendChild(document.createTextNode(part.value));
+          container.appendChild(activeDocument.createTextNode(part.value));
         }
       }
 

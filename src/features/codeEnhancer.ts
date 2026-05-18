@@ -77,18 +77,18 @@ export class CodeEnhancer {
     const lang = langClass ? langClass.replace('language-', '') : ''
 
     // Create wrapper
-    const wrapper = document.createElement('div')
+    const wrapper = createDiv()
     wrapper.className = 'vp-code-block'
 
     // Create header
-    const header = document.createElement('div')
+    const header = createDiv()
     header.className = 'vp-code-block-header'
 
     // Language label or filename
     const filename = code.getAttribute('data-filename')
     const displayLabel = filename || lang
     if (displayLabel) {
-      const langLabel = document.createElement('span')
+      const langLabel = createSpan()
       langLabel.className = 'vp-code-lang'
       langLabel.textContent = displayLabel
       header.appendChild(langLabel)
@@ -117,14 +117,14 @@ export class CodeEnhancer {
       button.textContent = 'Copied!'
       button.classList.add('copied')
 
-      setTimeout(() => {
+      activeWindow.setTimeout(() => {
         button.textContent = 'Copy'
         button.classList.remove('copied')
       }, 2000)
     } catch (err) {
       console.error('[VitePress Theme] CodeEnhancer - Failed to copy:', err)
       button.textContent = 'Failed'
-      setTimeout(() => {
+      activeWindow.setTimeout(() => {
         button.textContent = 'Copy'
       }, 2000)
     }
@@ -143,11 +143,11 @@ export class CodeEnhancer {
     }
 
     // Create line number container
-    const lineNumbers = document.createElement('div')
+    const lineNumbers = createDiv()
     lineNumbers.className = 'vp-line-numbers'
 
     lines.forEach((_, index) => {
-      const num = document.createElement('span')
+      const num = createSpan()
       num.className = 'vp-line-number'
       num.textContent = String(index + 1)
       lineNumbers.appendChild(num)

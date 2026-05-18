@@ -127,7 +127,7 @@ export class BadgeProcessor {
    * Locates the anchor text in the actual DOM string and inserts the Badge span
    */
   private injectBadgeAfterAnchor(container: HTMLElement, leftAnchor: string, rightAnchor: string, type: string, text: string) {
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null)
+    const walker = activeDocument.createTreeWalker(container, NodeFilter.SHOW_TEXT, null)
     let node: Text | null
     const textNodes: Text[] = []
 
@@ -208,7 +208,7 @@ export class BadgeProcessor {
    * Helper to create a secure Badge element
    */
   private createBadgeElement(type: string, text: string): HTMLSpanElement {
-    const span = document.createElement('span')
+    const span = createSpan()
     span.className = `vp-badge vp-badge-${type}`
     // Security: always use textContent to prevent XSS
     span.textContent = text
