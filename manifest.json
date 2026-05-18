@@ -1,8 +1,8 @@
 {
   "id": "vitepress-theme",
   "name": "VitePress Theme",
-  "version": "1.0.0",
-  "minAppVersion": "1.0.0",
+  "version": "1.0.1",
+  "minAppVersion": "1.2.3",
   "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography.",
   "author": "weizwz",
   "authorUrl": "https://github.com/weizwz",
