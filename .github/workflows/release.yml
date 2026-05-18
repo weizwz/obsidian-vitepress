@@ -3,7 +3,7 @@ name: Release Obsidian Plugin
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 permissions:
   contents: write
@@ -31,14 +31,14 @@ jobs:
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
-            main.js
-            styles.css
-            manifest.json
+            dist/main.js
+            dist/styles.css
+            dist/manifest.json
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            main.js
-            styles.css
-            manifest.json
+            dist/main.js
+            dist/styles.css
+            dist/manifest.json
