@@ -36,7 +36,7 @@ export class ContainerParser {
   }
 
   private observer: MutationObserver | null = null
-  private globalDebounceTimer: number | null = null
+  private globalScanQueued: boolean = false
 
   constructor(plugin: VitePressThemePlugin) {
     this.plugin = plugin
@@ -69,14 +69,14 @@ export class ContainerParser {
   }
 
   private requestGlobalScan() {
-    if (this.globalDebounceTimer) {
-      window.clearTimeout(this.globalDebounceTimer)
-    }
-    this.globalDebounceTimer = window.setTimeout(() => {
-      this.globalDebounceTimer = null
+    if (this.globalScanQueued) return
+    
+    this.globalScanQueued = true
+    activeWindow.requestAnimationFrame(() => {
+      this.globalScanQueued = false
       const sections = activeDocument.querySelectorAll('.markdown-preview-section')
       sections.forEach(s => this.processCodeGroupsInSection(s))
-    }, 150)
+    })
   }
 
   /**

@@ -513,7 +513,15 @@
  * ──────────────────────────────────────────────────────── */
 .vitepress-theme .vp-hidden,
 .vitepress-theme [class*='vp-'].vp-hidden {
-  display: none;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .vp-relative {
