@@ -85,13 +85,15 @@ export class CodeEnhancer {
     header.className = 'vp-code-block-header'
 
     // Language label or filename
-    const filename = code.getAttribute('data-filename')
-    const displayLabel = filename || lang
-    if (displayLabel) {
-      const langLabel = createSpan()
-      langLabel.className = 'vp-code-lang'
-      langLabel.textContent = displayLabel
-      header.appendChild(langLabel)
+    if (this.plugin.settings.showCodeLanguageLabel) {
+      const filename = code.getAttribute('data-filename')
+      const displayLabel = filename || lang
+      if (displayLabel) {
+        const langLabel = createSpan()
+        langLabel.className = 'vp-code-lang'
+        langLabel.textContent = displayLabel
+        header.appendChild(langLabel)
+      }
     }
 
     wrapper.appendChild(header)
@@ -104,29 +106,9 @@ export class CodeEnhancer {
     if (lang) {
       wrapper.dataset.language = lang
     }
-  }
 
-  /**
-   * Copy code to clipboard
-   */
-  private async copyCode(code: HTMLElement, button: HTMLButtonElement): Promise<void> {
-    const text = code.textContent || ''
-
-    try {
-      await navigator.clipboard.writeText(text)
-      button.textContent = 'Copied!'
-      button.classList.add('copied')
-
-      activeWindow.setTimeout(() => {
-        button.textContent = 'Copy'
-        button.classList.remove('copied')
-      }, 2000)
-    } catch (err) {
-      console.error('[VitePress Theme] CodeEnhancer - Failed to copy:', err)
-      button.textContent = 'Failed'
-      activeWindow.setTimeout(() => {
-        button.textContent = 'Copy'
-      }, 2000)
+    if (this.plugin.settings.showCodeLineNumbers) {
+      this.addLineNumbers(pre)
     }
   }
 
@@ -134,7 +116,7 @@ export class CodeEnhancer {
     const code = pre.querySelector('code')
     if (!code) return
 
-    const lines = code.innerHTML.split('\n')
+    const lines = (code.textContent || '').split('\n')
     if (lines.length <= 1) return
 
     // Remove trailing empty line

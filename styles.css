@@ -481,7 +481,7 @@ body.vitepress-theme.vp-feature-code-blocks .markdown-rendered pre {
 body.vitepress-theme.vp-feature-code-blocks .vp-code-block {
   position: relative;
   background: var(--code-background);
-  border-radius: 8px;
+  border-radius: var(--vp-code-block-radius, 8px);
   overflow: hidden;
   margin: 16px 0;
   border: 1px solid var(--background-modifier-border);
@@ -519,7 +519,7 @@ body.vitepress-theme.vp-feature-code-blocks .vp-code-block-header::before {
  * ──────────────────────────────────────────────────────── */
 body.vitepress-theme.vp-feature-code-blocks .vp-code-group {
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--vp-code-block-radius, 8px);
   overflow: hidden;
   margin: 16px 0;
   background: var(--code-background);

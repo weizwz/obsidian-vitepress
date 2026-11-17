@@ -63,7 +63,7 @@ export class LinkProcessor {
     link.setAttribute('rel', 'noopener noreferrer');
 
     // Scheme 2: Favicon API (https://favicon.im/{hostname})
-    if (!link.classList.contains('not') && !href.startsWith('https://img.shields.io/')) {
+    if (this.plugin.settings.enableExternalLinkFavicon && !link.classList.contains('not') && !href.startsWith('https://img.shields.io/')) {
       try {
         const url = new URL(href.startsWith('//') ? `https:${href}` : href);
         if (url.hostname) {
@@ -81,6 +81,8 @@ export class LinkProcessor {
    * Process internal links with special handling
    */
   private processInternalLink(link: HTMLAnchorElement, ctx: MarkdownPostProcessorContext): void {
+    if (!this.plugin.settings.enableRelativeLinkResolution) return
+
     const rawHref = link.getAttribute('data-href') || link.getAttribute('href') || '';
     if (rawHref.startsWith('./') || rawHref.startsWith('../')) {
       link.classList.add('vp-local-link');

@@ -31,16 +31,8 @@ export class ContainerParser {
       '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024" class="svg-icon"><path fill="currentColor" d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336z"/></svg>'
   }
 
-  // GitHub-style label mapping (提示容器 + details 折叠容器)
-  private labelMap: Record<string, string> = {
-    info: '提示',
-    note: '注意',
-    tip: '建议',
-    important: '重要',
-    warning: '警告',
-    danger: '危险',
-    caution: '警告',
-    details: '详细信息'
+  private getLabelMap(): Record<string, string> {
+    return this.plugin.getMessages().containers
   }
 
   private observer: MutationObserver | null = null
@@ -98,8 +90,7 @@ export class ContainerParser {
 
     // ② code-group 跨块容器触发逻辑
     // 如果发现标记或代码块，立即请求一次带防抖的全局扫描
-    const html = el.innerHTML
-    if (html.includes(':::') || el.querySelector('pre > code')) {
+    if (el.textContent?.includes(':::') || el.querySelector('pre > code')) {
       this.requestGlobalScan()
     }
   }
@@ -148,8 +139,9 @@ export class ContainerParser {
       const typeMatch = firstLineText.match(/^\s*(?::\s*)?:::\s*([a-zA-Z]+)(.*)?$/i)
       if (!typeMatch) return
 
+      const labels = this.getLabelMap()
       const typeLower = typeMatch[1].toLowerCase()
-      if (!this.labelMap[typeLower]) return
+      if (!labels[typeLower]) return
 
       if (!lastLineText.endsWith(':::')) return
 
@@ -161,9 +153,9 @@ export class ContainerParser {
 
       if (typeLower === 'details') {
         containerEl = createEl('details', { cls: 'vp-details' })
-        containerEl.createEl('summary', { 
-          cls: 'vp-details-summary', 
-          text: customTitle || this.labelMap['details'] 
+        containerEl.createEl('summary', {
+          cls: 'vp-details-summary',
+          text: customTitle || labels['details']
         })
         contentEl = containerEl.createDiv({ cls: 'vp-details-content' })
       } else {
@@ -424,7 +416,7 @@ export class ContainerParser {
   private createContainerElement(type: string, customTitle?: string): HTMLElement {
     const typeLower = type.toLowerCase()
     const icon = this.svgIcons[typeLower] || ''
-    const defaultLabel = this.labelMap[typeLower] || typeLower
+    const defaultLabel = this.getLabelMap()[typeLower] || typeLower
     const title = customTitle || defaultLabel
 
     const containerEl = createDiv({ cls: `vp-container vp-${typeLower}` })
