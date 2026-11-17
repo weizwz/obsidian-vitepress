@@ -92,8 +92,8 @@ export class VitePressSettingTab extends PluginSettingTab {
               .setDynamicTooltip()
               .onChange(async (value) => {
                 this.plugin.settings.codeBlockRadius = value
-                await this.plugin.saveSettings()
                 this.plugin.updateTheme()
+                await this.plugin.saveSettings()
               })
           )
       })

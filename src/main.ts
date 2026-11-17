@@ -70,7 +70,12 @@ export default class VitePressThemePlugin extends Plugin {
   }
 
   updateTheme() {
-    this.applyThemeToDocument(activeDocument)
+    const docs = new Set<Document>([document, activeDocument])
+    this.app.workspace.iterateAllLeaves((leaf) => {
+      const doc = leaf.view.containerEl.ownerDocument
+      if (doc) docs.add(doc)
+    })
+    docs.forEach((doc) => this.applyThemeToDocument(doc))
   }
 
   private applyThemeToDocument(doc: Document) {
