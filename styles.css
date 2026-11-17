@@ -225,13 +225,14 @@ body.vitepress-theme.vp-feature-containers .vp-container {
   border: 1px solid;
   border-left-width: 5px;
   background: var(--background-secondary-alt);
+  font-size: 0.875rem;
 }
 
 body.vitepress-theme.vp-feature-containers .vp-container-header {
   padding: var(--callout-title-padding);
   display: flex;
   gap: var(--size-4-1);
-  font-size: var(--callout-title-size);
+  font-size: 0.875rem;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -363,6 +364,7 @@ body.vitepress-theme.vp-feature-containers .vp-details {
   margin: 1em 0;
   overflow: hidden;
   background: var(--vp-c-indigo-soft);
+  font-size: 0.875rem;
 }
 
 body.vitepress-theme.vp-feature-containers .vp-details-summary {
@@ -649,9 +651,11 @@ body.vitepress-theme.vp-feature-containers .callout {
   border: 1px solid;
   border-left-width: 5px;
   padding: 16px 20px;
+  font-size: 0.875rem;
 }
 
 body.vitepress-theme.vp-feature-containers .callout-title {
+  font-size: 0.875rem;
   margin-bottom: 12px;
 }
 
