@@ -52,18 +52,40 @@ export class LinkProcessor {
    * Process external links
    */
   private processExternalLink(link: HTMLAnchorElement): void {
+    if (link.dataset.linkIconProcessed) return;
+
+    const href = link.getAttribute('href') || '';
     // Add external link indicator
     link.classList.add('vp-external-link');
 
     // Set target and rel
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener noreferrer');
+
+    // Scheme 2: Favicon API (https://favicon.im/{hostname})
+    if (!link.classList.contains('not') && !href.startsWith('https://img.shields.io/')) {
+      try {
+        const url = new URL(href.startsWith('//') ? `https:${href}` : href);
+        if (url.hostname) {
+          link.style.setProperty('--link-favicon', `url(https://favicon.im/${url.hostname})`);
+        }
+      } catch {
+        // Ignore invalid URL
+      }
+    }
+
+    link.dataset.linkIconProcessed = 'true';
   }
 
   /**
    * Process internal links with special handling
    */
   private processInternalLink(link: HTMLAnchorElement, ctx: MarkdownPostProcessorContext): void {
+    const rawHref = link.getAttribute('data-href') || link.getAttribute('href') || '';
+    if (rawHref.startsWith('./') || rawHref.startsWith('../')) {
+      link.classList.add('vp-local-link');
+    }
+
     // Check for line highlighting syntax: file.md#L10-L15
     const match = link.getAttribute('href')?.match(/^(.*)#L(\d+)(?:-L(\d+))?$/);
     if (match) {

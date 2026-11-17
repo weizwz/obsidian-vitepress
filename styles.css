@@ -164,16 +164,24 @@ body.vitepress-theme.vp-feature-typography .markdown-rendered ol ul::before {
 /* ────────────────────────────────────────────────────────
  * Link Icon Styles
  * ──────────────────────────────────────────────────────── */
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-external-link,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-local-link,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[target='_blank'],
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='./'],
-body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../'] {
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../'],
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='./'],
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='../'] {
   background-image: none;
   padding-right: 0;
 }
 
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-external-link::before,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-local-link::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[target='_blank']::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='./']::before,
-body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../']::before {
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../']::before,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='./']::before,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='../']::before {
   content: '';
   position: relative;
   top: -1px;
@@ -187,16 +195,23 @@ body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/'])
   background-image: var(--link-favicon, url('https://api.iconify.design/heroicons-solid:link.svg?color=%23409eff'));
 }
 
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-local-link::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='./']::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../']::before,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='./']::before,
+body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='../']::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='https://note.weizwz.com']::before,
 body.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='https://www.note.weizwz.com']::before {
   background-image: url('https://p.weizwz.com/logo_a4353391cbf0889b.webp') !important;
 }
 
+body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-external-link::before,
+body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not).vp-local-link::before,
 body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[target='_blank']::before,
 body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='./']::before,
-body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../']::before {
+body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[href^='../']::before,
+body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='./']::before,
+body.theme-dark.vitepress-theme .markdown-rendered a:not([href^='https://img.shields.io/']):not(.not)[data-href^='../']::before {
   filter: brightness(0.8);
 }
 
@@ -207,7 +222,8 @@ body.vitepress-theme.vp-feature-containers .vp-container {
   border-radius: 8px;
   padding: 16px 20px;
   margin: 1em 0;
-  border-left: 5px solid;
+  border: 1px solid;
+  border-left-width: 5px;
   background: var(--background-secondary-alt);
 }
 
@@ -538,6 +554,9 @@ body.vitepress-theme.vp-feature-code-blocks .vp-code-group-tabs::before {
 }
 
 body.vitepress-theme.vp-feature-code-blocks button.vp-code-group-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px;
   border: none;
   background-color: transparent;
@@ -552,6 +571,12 @@ body.vitepress-theme.vp-feature-code-blocks button.vp-code-group-tab {
   flex-shrink: 0;
   margin: 0;
   height: 46px;
+}
+
+body.vitepress-theme.vp-feature-code-blocks .vp-code-group-tab-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 body.vitepress-theme.vp-feature-code-blocks button.vp-code-group-tab:hover {
@@ -621,10 +646,8 @@ body.vitepress-theme .markdown-rendered th {
  * ──────────────────────────────────────────────────────── */
 body.vitepress-theme.vp-feature-containers .callout {
   border-radius: 8px;
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  border-left: 5px solid;
+  border: 1px solid;
+  border-left-width: 5px;
   padding: 16px 20px;
 }
 
