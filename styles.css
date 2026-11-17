@@ -243,6 +243,11 @@ body.vitepress-theme.vp-feature-containers .vp-container-icon {
   align-items: center;
 }
 
+body.vitepress-theme.vp-feature-containers .vp-container-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
 body.vitepress-theme.vp-feature-containers .vp-container-title-text {
   color: inherit;
   font-weight: var(--callout-title-weight, 600);
@@ -657,6 +662,37 @@ body.vitepress-theme.vp-feature-containers .callout {
 body.vitepress-theme.vp-feature-containers .callout-title {
   font-size: 0.875rem;
   margin-bottom: 12px;
+  align-items: center;
+}
+
+body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .callout-icon > svg,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .callout-icon > svg {
+  display: none;
+}
+
+body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .callout-icon::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
 body.vitepress-theme.vp-feature-containers .callout-content > *:first-child {
@@ -676,8 +712,12 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] {
   border-color: var(--vp-c-gray-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .callout-icon {
   color: var(--vp-c-gray-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64m67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344M590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64m67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344M590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z'%3E%3C/path%3E%3C/svg%3E");
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] a,
 body.vitepress-theme.vp-feature-containers .callout[data-callout='info'] code {
@@ -689,8 +729,12 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] {
   border-color: var(--vp-c-indigo-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .callout-icon {
   color: var(--vp-c-indigo-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='note'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64m67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344M590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64m67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344M590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] {
@@ -698,8 +742,12 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] {
   border-color: var(--vp-c-green-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .callout-icon {
   color: var(--vp-c-green-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='tip'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M384 960v-64h192.064v64zm448-544a350.656 350.656 0 0 1-128.32 271.424C665.344 719.04 640 763.776 640 813.504V832H320v-14.336c0-48-19.392-95.36-57.216-124.992a351.552 351.552 0 0 1-128.448-344.256c25.344-136.448 133.888-248.128 269.76-276.48A352.384 352.384 0 0 1 832 416m-544 32c0-132.288 75.904-224 192-224v-64c-154.432 0-256 122.752-256 288z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M384 960v-64h192.064v64zm448-544a350.656 350.656 0 0 1-128.32 271.424C665.344 719.04 640 763.776 640 813.504V832H320v-14.336c0-48-19.392-95.36-57.216-124.992a351.552 351.552 0 0 1-128.448-344.256c25.344-136.448 133.888-248.128 269.76-276.48A352.384 352.384 0 0 1 832 416m-544 32c0-132.288 75.904-224 192-224v-64c-154.432 0-256 122.752-256 288z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] {
@@ -707,8 +755,12 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] {
   border-color: var(--vp-c-purple-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .callout-icon {
   color: var(--vp-c-purple-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='important'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M640 832a128 128 0 0 1-256 0zm192-64H134.4a38.4 38.4 0 0 1 0-76.8H192V448c0-154.88 110.08-284.16 256.32-313.6a64 64 0 1 1 127.36 0A320.128 320.128 0 0 1 832 448v243.2h57.6a38.4 38.4 0 0 1 0 76.8z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M640 832a128 128 0 0 1-256 0zm192-64H134.4a38.4 38.4 0 0 1 0-76.8H192V448c0-154.88 110.08-284.16 256.32-313.6a64 64 0 1 1 127.36 0A320.128 320.128 0 0 1 832 448v243.2h57.6a38.4 38.4 0 0 1 0 76.8z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] {
@@ -716,8 +768,12 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] {
   border-color: var(--vp-c-yellow-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .callout-icon {
   color: var(--vp-c-yellow-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='warning'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M928.99 755.83 574.6 203.25c-12.89-20.16-36.76-32.58-62.6-32.58s-49.71 12.43-62.6 32.58L95.01 755.83c-12.91 20.12-12.9 44.91.01 65.03 12.92 20.12 36.78 32.51 62.59 32.49h708.78c25.82.01 49.68-12.37 62.59-32.49 12.91-20.12 12.92-44.91.01-65.03M554.67 768h-85.33v-85.33h85.33zm0-426.67v298.66h-85.33V341.32z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M928.99 755.83 574.6 203.25c-12.89-20.16-36.76-32.58-62.6-32.58s-49.71 12.43-62.6 32.58L95.01 755.83c-12.91 20.12-12.9 44.91.01 65.03 12.92 20.12 36.78 32.51 62.59 32.49h708.78c25.82.01 49.68-12.37 62.59-32.49 12.91-20.12 12.92-44.91.01-65.03M554.67 768h-85.33v-85.33h85.33zm0-426.67v298.66h-85.33V341.32z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'],
@@ -726,10 +782,15 @@ body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] {
   border-color: var(--vp-c-red-1);
 }
 body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .svg-icon,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .callout-icon,
 body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .callout-title,
-body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .svg-icon {
+body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .callout-icon {
   color: var(--vp-c-red-1);
+}
+body.vitepress-theme.vp-feature-containers .callout[data-callout='danger'] .callout-icon::before,
+body.vitepress-theme.vp-feature-containers .callout[data-callout='caution'] .callout-icon::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23000' d='M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* ────────────────────────────────────────────────────────
