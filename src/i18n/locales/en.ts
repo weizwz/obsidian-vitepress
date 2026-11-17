@@ -37,6 +37,10 @@ export interface LocaleMessages {
       name: string
       desc: string
     }
+    enableCodeLineAnnotations: {
+      name: string
+      desc: string
+    }
     enableContainerParser: {
       name: string
       desc: string
@@ -135,6 +139,10 @@ export const en: LocaleMessages = {
     showCodeLineNumbers: {
       name: 'Show line numbers',
       desc: 'Display line numbers alongside code blocks in reading view'
+    },
+    enableCodeLineAnnotations: {
+      name: 'Code line highlights and annotations',
+      desc: 'Support {1,3-5} line highlights and [!code focus/++/--/error/warning] markers'
     },
     enableContainerParser: {
       name: 'Parse VitePress containers',

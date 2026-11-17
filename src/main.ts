@@ -84,6 +84,10 @@ export default class VitePressThemePlugin extends Plugin {
     body.classList.toggle('vp-feature-typography', this.settings.enableTypography)
     body.classList.toggle('vp-feature-containers', this.settings.enableContainers)
     body.classList.toggle('vp-feature-code-blocks', this.settings.enableCodeBlocks)
+    body.classList.toggle(
+      'vp-feature-link-favicon',
+      this.settings.enableLinkProcessing && this.settings.enableExternalLinkFavicon
+    )
 
     const accent = this.settings.followObsidianTheme ? 'var(--accent-color)' : this.settings.customPrimaryColor
     body.style.setProperty('--vp-c-brand-1', accent)
@@ -98,7 +102,8 @@ export default class VitePressThemePlugin extends Plugin {
       'vitepress-theme',
       'vp-feature-typography',
       'vp-feature-containers',
-      'vp-feature-code-blocks'
+      'vp-feature-code-blocks',
+      'vp-feature-link-favicon'
     )
     body.style.removeProperty('--vp-c-brand-1')
     body.style.removeProperty('--vp-c-brand-2')

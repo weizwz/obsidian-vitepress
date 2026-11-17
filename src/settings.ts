@@ -40,6 +40,36 @@ export class VitePressSettingTab extends PluginSettingTab {
           )
       })
 
+    // Appearance
+    new SettingGroup(containerEl)
+      .setHeading(msg.groups.appearance)
+      .addSetting((setting) => {
+        setting
+          .setName(msg.followObsidianTheme.name)
+          .setDesc(msg.followObsidianTheme.desc)
+          .addToggle((toggle) =>
+            toggle.setValue(this.plugin.settings.followObsidianTheme).onChange(async (value) => {
+              this.plugin.settings.followObsidianTheme = value
+              this.plugin.updateTheme()
+              await this.plugin.saveSettings()
+              this.display()
+            })
+          )
+      })
+      .addSetting((setting) => {
+        setting
+          .setName(msg.customPrimaryColor.name)
+          .setDesc(msg.customPrimaryColor.desc)
+          .addColorPicker((color) =>
+            color.setValue(this.plugin.settings.customPrimaryColor).onChange(async (value) => {
+              this.plugin.settings.customPrimaryColor = value
+              this.plugin.updateTheme()
+              await this.plugin.saveSettings()
+            })
+          )
+          .setDisabled(this.plugin.settings.followObsidianTheme)
+      })
+
     // Styles
     new SettingGroup(containerEl)
       .setHeading(msg.groups.styles)
@@ -114,6 +144,19 @@ export class VitePressSettingTab extends PluginSettingTab {
           )
           .setDisabled(!this.plugin.settings.enableCodeBlocks)
       })
+      .addSetting((setting) => {
+        setting
+          .setName(msg.enableCodeLineAnnotations.name)
+          .setDesc(msg.enableCodeLineAnnotations.desc)
+          .addToggle((toggle) =>
+            toggle.setValue(this.plugin.settings.enableCodeLineAnnotations).onChange(async (value) => {
+              this.plugin.settings.enableCodeLineAnnotations = value
+              await this.plugin.saveSettings()
+              this.plugin.rerenderMarkdownViews()
+            })
+          )
+          .setDisabled(!this.plugin.settings.enableCodeBlocks)
+      })
 
     // Features
     new SettingGroup(containerEl)
@@ -137,6 +180,7 @@ export class VitePressSettingTab extends PluginSettingTab {
           .addToggle((toggle) =>
             toggle.setValue(this.plugin.settings.enableLinkProcessing).onChange(async (value) => {
               this.plugin.settings.enableLinkProcessing = value
+              this.plugin.updateTheme()
               await this.plugin.saveSettings()
               this.plugin.rerenderMarkdownViews()
               this.display()
@@ -150,6 +194,7 @@ export class VitePressSettingTab extends PluginSettingTab {
           .addToggle((toggle) =>
             toggle.setValue(this.plugin.settings.enableExternalLinkFavicon).onChange(async (value) => {
               this.plugin.settings.enableExternalLinkFavicon = value
+              this.plugin.updateTheme()
               await this.plugin.saveSettings()
               this.plugin.rerenderMarkdownViews()
             })
@@ -192,36 +237,6 @@ export class VitePressSettingTab extends PluginSettingTab {
               this.plugin.rerenderMarkdownViews()
             })
           )
-      })
-
-    // Appearance
-    new SettingGroup(containerEl)
-      .setHeading(msg.groups.appearance)
-      .addSetting((setting) => {
-        setting
-          .setName(msg.followObsidianTheme.name)
-          .setDesc(msg.followObsidianTheme.desc)
-          .addToggle((toggle) =>
-            toggle.setValue(this.plugin.settings.followObsidianTheme).onChange(async (value) => {
-              this.plugin.settings.followObsidianTheme = value
-              await this.plugin.saveSettings()
-              this.plugin.updateTheme()
-              this.display()
-            })
-          )
-      })
-      .addSetting((setting) => {
-        setting
-          .setName(msg.customPrimaryColor.name)
-          .setDesc(msg.customPrimaryColor.desc)
-          .addColorPicker((color) =>
-            color.setValue(this.plugin.settings.customPrimaryColor).onChange(async (value) => {
-              this.plugin.settings.customPrimaryColor = value
-              await this.plugin.saveSettings()
-              this.plugin.updateTheme()
-            })
-          )
-          .setDisabled(this.plugin.settings.followObsidianTheme)
       })
 
     // Advanced

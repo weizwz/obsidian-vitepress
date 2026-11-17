@@ -9,6 +9,7 @@ export interface VitePressSettings {
   codeBlockRadius: number
 
   showCodeLineNumbers: boolean
+  enableCodeLineAnnotations: boolean
 
   enableContainerParser: boolean
   enableLinkProcessing: boolean
@@ -32,6 +33,7 @@ export const DEFAULT_SETTINGS: VitePressSettings = {
   codeBlockRadius: 8,
 
   showCodeLineNumbers: true,
+  enableCodeLineAnnotations: true,
 
   enableContainerParser: true,
   enableLinkProcessing: true,

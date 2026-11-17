@@ -39,6 +39,10 @@ export const zh: LocaleMessages = {
       name: '显示代码行号',
       desc: '在阅读模式下为代码块左侧显示行号'
     },
+    enableCodeLineAnnotations: {
+      name: '代码块高亮与标记',
+      desc: '支持 {1,3-5} 行高亮及 [!code focus/++/--/error/warning] 行内标记'
+    },
     enableContainerParser: {
       name: '解析 VitePress 容器',
       desc: '将 ::: 语法解析并渲染为提示容器、折叠块和代码组'
