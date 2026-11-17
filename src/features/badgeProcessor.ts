@@ -23,6 +23,11 @@ export class BadgeProcessor {
   processBadges = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
     if (!this.plugin.settings.enableBadgeProcessor) return
 
+    // Skip pure code block sections to avoid matching <Badge /> examples inside code blocks
+    if (el.querySelector('pre') && !el.querySelector('p, h1, h2, h3, h4, h5, h6, li, blockquote, td, th')) {
+      return
+    }
+
     // Get source info to recover stripped tags
     const sectionInfo = ctx.getSectionInfo(el)
     if (!sectionInfo) return
@@ -127,7 +132,15 @@ export class BadgeProcessor {
    * Locates the anchor text in the actual DOM string and inserts the Badge span
    */
   private injectBadgeAfterAnchor(container: HTMLElement, leftAnchor: string, rightAnchor: string, type: string, text: string) {
-    const walker = activeDocument.createTreeWalker(container, NodeFilter.SHOW_TEXT, null)
+    const walker = activeDocument.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+      acceptNode: (node) => {
+        const parent = node.parentElement
+        if (parent?.closest('pre, code, .vp-code-block-header, .vp-line-numbers, .vp-badge')) {
+          return NodeFilter.FILTER_REJECT
+        }
+        return NodeFilter.FILTER_ACCEPT
+      }
+    })
     let node: Text | null
     const textNodes: Text[] = []
 

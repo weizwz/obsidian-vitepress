@@ -103,19 +103,6 @@ export class VitePressSettingTab extends PluginSettingTab {
       .setHeading(msg.groups.codeBlocks)
       .addSetting((setting) => {
         setting
-          .setName(msg.showCodeLanguageLabel.name)
-          .setDesc(msg.showCodeLanguageLabel.desc)
-          .addToggle((toggle) =>
-            toggle.setValue(this.plugin.settings.showCodeLanguageLabel).onChange(async (value) => {
-              this.plugin.settings.showCodeLanguageLabel = value
-              await this.plugin.saveSettings()
-              this.plugin.rerenderMarkdownViews()
-            })
-          )
-          .setDisabled(!this.plugin.settings.enableCodeBlocks)
-      })
-      .addSetting((setting) => {
-        setting
           .setName(msg.showCodeLineNumbers.name)
           .setDesc(msg.showCodeLineNumbers.desc)
           .addToggle((toggle) =>

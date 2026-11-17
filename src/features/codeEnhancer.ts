@@ -85,15 +85,13 @@ export class CodeEnhancer {
     header.className = 'vp-code-block-header'
 
     // Language label or filename
-    if (this.plugin.settings.showCodeLanguageLabel) {
-      const filename = code.getAttribute('data-filename')
-      const displayLabel = filename || lang
-      if (displayLabel) {
-        const langLabel = createSpan()
-        langLabel.className = 'vp-code-lang'
-        langLabel.textContent = displayLabel
-        header.appendChild(langLabel)
-      }
+    const filename = code.getAttribute('data-filename')
+    const displayLabel = filename || lang
+    if (displayLabel) {
+      const langLabel = createSpan()
+      langLabel.className = 'vp-code-lang'
+      langLabel.textContent = displayLabel
+      header.appendChild(langLabel)
     }
 
     wrapper.appendChild(header)

@@ -39,10 +39,6 @@ export const zh: LocaleMessages = {
       name: '显示代码行号',
       desc: '在阅读模式下为代码块左侧显示行号'
     },
-    showCodeLanguageLabel: {
-      name: '显示语言标签',
-      desc: '在代码块顶栏右上角显示语言或自定义文件名'
-    },
     enableContainerParser: {
       name: '解析 VitePress 容器',
       desc: '将 ::: 语法解析并渲染为提示容器、折叠块和代码组'
