@@ -1,182 +1,101 @@
 # VitePress Theme for Obsidian
 
-一个为 Obsidian 设计的 [VitePress](https://vitepress.dev/) 风格主题插件，让你在 Obsidian 中获得与 VitePress 文档站点一致的阅读体验——包括语法容器、折叠容器、代码组等特性。
+一个为 Obsidian 设计的 [VitePress](https://vitepress.dev/) 风格主题插件，让以 Vitepress 为基础的站点文档也能在 Obsidian 中获得良好的阅读体验。
 
 **[English Documentation](./README.md)**
 
-## 功能特性
+主要包含以下功能：
 
-### 提示容器
+1. 让基础内容样式，包括标题、行高等阅读风格符合 Vitepress 的标准。
+2. 正确展现 VitePress 的扩展语法，包括 frontmatter 属性、Emoji 表情、容器、代码块组、代码行高亮/diff/警告等。
+3. 对基础样式、代码风格等进行了美化，使阅读界面更加美观。
 
-将 VitePress 原生 `:::` 语法渲染为 GitHub Alert 风格的卡片，支持自定义标题：
+![home](src/asset/images/home.png)
 
-```markdown
-::: info 信息
-这是一条信息
-:::
+## 功能展示
 
-::: tip 建议
-这是一个建议
-:::
+### frontmatter 属性
 
-::: warning 警告
-这是一条警告
-:::
+![frontmatter](src/asset/images/frontmatter.png)
 
-::: danger 危险
-这是一个危险警告
-:::
-```
+### 标题、文本、代码块、链接图标
 
-![预览1](src/asset/images/preview1.png)
+![main](src/asset/images/main.png)
 
-### 折叠容器
+### Emoji 表情
 
-将 VitePress 原生 `::: details` 语法渲染为可点击展开的折叠块（原生 `<details>/<summary>` 元素）：
-
-```markdown
-::: details 点我查看
-这是折叠的内容，点击标题可展开
-:::
-```
-
-![预览2](src/asset/images/preview2.png)
-
-### 代码块增强
-
-代码块自动添加语言标签和文件名显示，支持 VitePress 的 `[filename]` 语法：
-
-````markdown
-```ts [config.ts]
-export default {
-  title: 'My Site'
-}
-```
-````
-
-![预览3](src/asset/images/preview3.png)
-
-### 代码块组
-
-将多个连续代码块组合为可切换 Tab 的代码组：
-
-````markdown
-::: code-group
-
-```ts [TypeScript]
-const msg: string = 'hello'
-```
-
-```js [JavaScript]
-const msg = 'hello'
-```
-
-:::
-````
-
-![预览4](src/asset/images/preview4.png)
-
-### Obsidian Callout 适配
-
-原生的 Obsidian Callout 会自动适配 VitePress 配色风格：
-
-```markdown
-> [!note]
-> 这是一个 note callout
-
-> [!warning]
-> 这是一个 warning callout
-```
-
-![预览5](src/asset/images/preview5.png)
+![emoji](src/asset/images/emoji.png)
 
 ### 徽章组件
 
-支持 VitePress 风格的行内徽章（Badge），常用于标注版本或状态：
+![badge](src/asset/images/badge.png)
 
-```markdown
-VitePress <Badge type="info" text="default" />
-VitePress <Badge type="tip" text="^1.5.0" />
-VitePress <Badge type="warning" text="beta" />
-VitePress <Badge type="danger" text="caution" />
-```
+### 引用块
 
-![预览6](src/asset/images/preview6.png)
+![block](src/asset/images/block.png)
 
-### Emoji
+### 折叠语法/折叠容器
 
-支持 VitePress Emoji，鼠标悬停时会显示 Emoji 对应的代码：
+![details](src/asset/images/details.png)
 
-```markdown
-:cn: :eight: :seven:
-```
+![details1](src/asset/images/details1.png)
 
-![预览7](src/asset/images/preview7.png)
+### 提示容器
 
-### 其他样式
+![tips](src/asset/images/tips.png)
 
-- **排版** — 标题层级、行高与链接样式（VitePress 风格）
-- **链接增强** — 支持相对路径转换 (`./file.md`) 与行高亮引用 (`#L10`)
-- **表格** — 统一边框与背景色
+![tips1](src/asset/images/tips1.png)
+
+### 代码块标题、代码块组
+
+![group](src/asset/images/group.png)
+
+### 代码块行高亮/diff/告警
+
+![highlight](src/asset/images/highlight.png)
+
+![focus](src/asset/images/focus.png)
+
+![diff](src/asset/images/diff.png)
+
+![warning](src/asset/images/warning.png)
 
 ## 兼容性说明
 
-| 特性                                | 阅读模式 | 实时预览 | 源码模式 |
-| ----------------------------------- | :------: | :------: | :------: |
-| 提示容器（info/tip/warning/danger） |    ✅    |    ❌    |    ❌    |
-| 折叠容器（details）                 |    ✅    |    ❌    |    ❌    |
-| 徽章组件（Badge）                   |    ✅    |    ❌    |    ❌    |
-| 代码块组（code-group）              |    ✅    |    ❌    |    ❌    |
-| 代码块增强（语言标签/文件名）       |    ✅    |    ❌    |    ❌    |
-| Callout 样式                        |    ✅    |    ✅    |    ❌    |
-| 表格 / 排版 / 链接增强              |    ✅    |    ✅    |    ❌    |
+| 特性                                                          | 阅读模式 | 实时预览 | 源码模式 |
+| ------------------------------------------------------------- | :------: | :------: | :------: |
+| 提示容器（info/note/tip/important/warning/danger/caution）    |    ✅     |    ❌     |    ❌     |
+| 折叠容器（details）                                           |    ✅     |    ❌     |    ❌     |
+| 徽章组件（Badge）                                             |    ✅     |    ❌     |    ❌     |
+| Emoji 表情（`:emoji:`）                                       |    ✅     |    ❌     |    ❌     |
+| 代码块组（code-group）                                        |    ✅     |    ❌     |    ❌     |
+| 代码块增强（语言标签 / 文件名 / 行号 / 行高亮 / diff / 告警） |    ✅     |    ❌     |    ❌     |
+| 链接增强（外链图标 / 相对路径 / 行号链接）                    |    ✅     |    ❌     |    ❌     |
+| 表格 / 排版样式                                               |    ✅     |    ✅     |    ❌     |
 
-> **说明**：VitePress 特有语法（`:::` 容器）在 Obsidian 阅读模式下通过 Post Processor 解析渲染，实时预览和源码模式不作处理，保留原始文本以方便编辑。
-
-## 安装
-
-### 从源码构建
-
-```bash
-git clone https://github.com/weizwz/obsidian-vitepress-theme
-cd obsidian-vitepress-theme
-pnpm install
-pnpm run build
-```
-
-将 `manifest.json`、`main.js` 复制到 Obsidian vault 的 `.obsidian/plugins/vitepress-theme/` 目录后，在 Obsidian **设置 → 第三方插件** 中启用。
-
-### 手动安装
-
-1. 下载最新 Release 中的 `manifest.json` 和 `main.js` 和 `styles.css`
-2. 放置到 `.obsidian/plugins/vitepress-theme/` 目录
-3. 在 Obsidian **设置 → 第三方插件** 中启用
-
-## 开发
-
-```bash
-# 安装依赖
-pnpm install
-
-# 开发模式（watch + 自动复制到根目录）
-pnpm run dev
-
-# 生产构建（minify + 复制到根目录）
-pnpm run build
-```
 
 ## 设置项
 
-| 设置                       | 说明                               |  默认值   |
-| -------------------------- | ---------------------------------- | :-------: |
-| Enable code block styles   | 代码块增强（语言标签、文件名）     |    ✅     |
-| Enable container styles    | 提示容器与折叠容器 CSS             |    ✅     |
-| Enable typography styles   | 排版样式（标题、链接等）           |    ✅     |
-| Parse VitePress containers | 解析 `:::` 语法并渲染容器          |    ✅     |
-| Process links              | 内链解析与跨文件行高亮引用         |    ✅     |
-| Follow Obsidian theme      | 自动跟随 Obsidian 主题色           |    ✅     |
-| Custom primary color       | 自定义主品牌色（不跟随主题时生效） | `#409eff` |
-| Debug mode                 | 启用控制台调试日志                 |    ❌     |
+| 设置                   | 说明                                                                       |    默认值     |
+| ---------------------- | -------------------------------------------------------------------------- | :-----------: |
+| 显示语言               | 选择插件界面与提示容器默认标题的语言（跟随 Obsidian / English / 简体中文） | 跟随 Obsidian |
+| 跟随 Obsidian 主题色   | 自动使用 Obsidian 当前强调色作为品牌主色                                   |       ✅       |
+| 自定义品牌主色         | 关闭跟随主题色时使用的自定义品牌颜色                                       |   `#409eff`   |
+| 启用排版样式           | 应用 VitePress 排版规范（标题、链接、列表与行高）                          |       ✅       |
+| 启用代码块样式         | 应用 VitePress 风格代码块（窗口顶栏、语言标签与代码组）                    |       ✅       |
+| 启用容器样式           | 应用 VitePress 风格提示容器与折叠容器样式                                  |       ✅       |
+| 代码块圆角             | 设置代码块与代码组容器的圆角大小（0–16 px）                                |      `8`      |
+| 显示代码行号           | 在阅读模式下为代码块左侧显示行号                                           |       ✅       |
+| 代码块高亮与标记       | 支持 `{1,3-5}` 行高亮及 `[!code focus/++/--/error/warning]` 行内标记       |       ✅       |
+| 解析 VitePress 容器    | 将 `:::` 语法解析并渲染为提示容器、折叠块和代码组                          |       ✅       |
+| 处理链接               | 增强外部链接与 VitePress 风格内部链接                                      |       ✅       |
+| 显示外链图标           | 通过 favicon.im 为外部链接自动加载站点图标                                 |       ✅       |
+| 解析相对路径与行号链接 | 支持 VitePress 风格的相对路径和 `#L10-L15` 行号链接                        |       ✅       |
+| 解析 VitePress 徽章    | 将 `<Badge />` 语法解析并渲染为行内徽章                                    |       ✅       |
+| 解析 VitePress 表情    | 将 `:emoji:` 短代码解析为对应表情符号                                      |       ✅       |
+| 调试模式               | 在开发者控制台输出调试日志                                                 |       ❌       |
+| 重新加载样式           | 重新应用主题样式并刷新已打开的 Markdown 预览视图                           |       -       |
+| 恢复默认配置           | 将所有配置项重置为初始默认值                                               |       -       |
 
 ## License
 

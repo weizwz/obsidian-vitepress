@@ -1,182 +1,100 @@
 # VitePress Theme for Obsidian
 
-A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing the modern documentation aesthetic and syntax to your notes.
+A [VitePress](https://vitepress.dev/)-style theme plugin for Obsidian, bringing a great reading experience to VitePress-based documentation within Obsidian.
 
 **[中文文档](./README.zh.md)**
 
-## Features
+Main features:
 
-### Alert Containers
+1. Aligns basic content styles—including headings, line height, and overall reading typography—with VitePress standards.
+2. Properly renders VitePress extended syntax, including frontmatter properties, Emojis, containers, code groups, code line highlighting / diff / warning annotations, and more.
+3. Enhances base styles and code block appearance for a cleaner, more visually appealing reading interface.
 
-Renders VitePress native `:::` syntax as GitHub Alert-style cards with optional custom titles:
+![home](src/asset/images/home.png)
 
-```markdown
-::: info Information
-This is an info message
-:::
+## Feature Showcase
 
-::: tip Suggestion
-This is a tip
-:::
+### Frontmatter Properties
 
-::: warning Warning
-This is a warning message
-:::
+![frontmatter](src/asset/images/frontmatter.png)
 
-::: danger Danger
-This is a danger alert
-:::
-```
+### Headings, Text, Code Blocks & Link Icons
 
-![Preview1](src/asset/images/preview1.png)
-
-### Collapsible Container
-
-Renders `::: details` as a native clickable `<details>/<summary>` element:
-
-```markdown
-::: details Click to expand
-This content is hidden until clicked
-:::
-```
-
-![Preview2](src/asset/images/preview2.png)
-
-### Enhanced Code Blocks
-
-Code blocks automatically get a language label and filename display, supporting VitePress `[filename]` syntax:
-
-````markdown
-```ts [config.ts]
-export default {
-  title: 'My Site'
-}
-```
-````
-
-![Preview3](src/asset/images/preview3.png)
-
-### Code Groups
-
-Groups multiple consecutive code blocks into a tabbed switcher:
-
-````markdown
-::: code-group
-
-```ts [TypeScript]
-const msg: string = 'hello'
-```
-
-```js [JavaScript]
-const msg = 'hello'
-```
-
-:::
-````
-
-![Preview4](src/asset/images/preview4.png)
-
-### Obsidian Callout Adaptation
-
-Native Obsidian Callouts are automatically styled to match VitePress colors:
-
-```markdown
-> [!note]
-> This is a note callout
-
-> [!warning]
-> This is a warning callout
-```
-
-![Preview5](src/asset/images/preview5.png)
-
-### Badge Component
-
-VitePress-style badges for marking status or versions:
-
-```markdown
-VitePress <Badge type="info" text="default" />
-VitePress <Badge type="tip" text="^1.5.0" />
-VitePress <Badge type="warning" text="beta" />
-VitePress <Badge type="danger" text="caution" />
-```
-
-![Preview6](src/asset/images/preview6.png)
+![main](src/asset/images/main.png)
 
 ### Emoji
 
-Support VitePress Emoji, and put the mouse on it to display the code corresponding to Emoji:
+![emoji](src/asset/images/emoji.png)
 
-```markdown
-:cn: :eight: :seven:
-```
+### Badge Component
 
-![Preview7](src/asset/images/preview7.png)
+![badge](src/asset/images/badge.png)
 
-### Additional Styles
+### Blockquotes
 
-- **Typography** — Headings, line-height, and link styles consistent with VitePress
-- **Links** — Relative path resolution support (`./file.md`) and line highlighting references (`#L10`)
-- **Tables** — Unified borders and background colors
+![block](src/asset/images/block.png)
+
+### Collapsible Syntax / Details Container
+
+![details](src/asset/images/details.png)
+
+![details1](src/asset/images/details1.png)
+
+### Alert Containers
+
+![tips](src/asset/images/tips.png)
+
+![tips1](src/asset/images/tips1.png)
+
+### Code Block Titles & Code Groups
+
+![group](src/asset/images/group.png)
+
+### Code Line Highlighting / Diff / Warning Annotations
+
+![highlight](src/asset/images/highlight.png)
+
+![focus](src/asset/images/focus.png)
+
+![diff](src/asset/images/diff.png)
+
+![warning](src/asset/images/warning.png)
 
 ## Compatibility
 
-| Feature                                    | Reading Mode | Live Preview | Source Mode |
-| ------------------------------------------ | :----------: | :----------: | :---------: |
-| Alert containers (info/tip/warning/danger) |      ✅      |      ❌      |     ❌      |
-| Collapsible container (details)            |      ✅      |      ❌      |     ❌      |
-| Badge component (Badge)                    |      ✅      |      ❌      |     ❌      |
-| Code group (code-group)                    |      ✅      |      ❌      |     ❌      |
-| Code block enhancements                    |      ✅      |      ❌      |     ❌      |
-| Callout styles                             |      ✅      |      ✅      |     ❌      |
-| Table / Typography / Links                 |      ✅      |      ✅      |     ❌      |
-
-> **Note**: VitePress-specific syntax (`:::` containers) is parsed and rendered in Obsidian Reading Mode via Post Processor. Live Preview and Source Mode are intentionally left unprocessed to preserve raw text for editing.
-
-## Installation
-
-### From Source
-
-```bash
-git clone https://github.com/weizwz/obsidian-vitepress-theme
-cd obsidian-vitepress-theme
-pnpm install
-pnpm run build
-```
-
-Copy `manifest.json` and `main.js` to your Obsidian vault's `.obsidian/plugins/vitepress-theme/` directory, then enable it under **Settings → Community Plugins**.
-
-### Manual Installation
-
-1. Download the latest release (`manifest.json` and `main.js` and `styles.css`)
-2. Place them in `.obsidian/plugins/vitepress-theme/`
-3. Enable under **Settings → Community Plugins**
-
-## Development
-
-```bash
-# Install dependencies
-pnpm install
-
-# Development mode (watch + auto-copy to root)
-pnpm run dev
-
-# Production build (minified + copied to root)
-pnpm run build
-```
+| Feature                                                                                         | Reading Mode | Live Preview | Source Mode |
+| ----------------------------------------------------------------------------------------------- | :----------: | :----------: | :---------: |
+| Alert containers (info/note/tip/important/warning/danger/caution)                               |      ✅       |      ❌       |      ❌      |
+| Collapsible container (details)                                                                 |      ✅       |      ❌       |      ❌      |
+| Badge component (Badge)                                                                         |      ✅       |      ❌       |      ❌      |
+| Emoji (`:emoji:`)                                                                               |      ✅       |      ❌       |      ❌      |
+| Code group (code-group)                                                                         |      ✅       |      ❌       |      ❌      |
+| Code block enhancements (language label / filename / line numbers / highlights / diff / alerts) |      ✅       |      ❌       |      ❌      |
+| Link enhancements (external favicons / relative paths / line highlight links)                   |      ✅       |      ❌       |      ❌      |
+| Table / Typography styles                                                                       |      ✅       |      ✅       |      ❌      |
 
 ## Settings
 
-| Setting                    | Description                                        |  Default  |
-| -------------------------- | -------------------------------------------------- | :-------: |
-| Enable code block styles   | Language labels and filename display               |    ✅     |
-| Enable container styles    | Alert container and details CSS                    |    ✅     |
-| Enable typography styles   | Heading, link, and layout styles                   |    ✅     |
-| Parse VitePress containers | Parse `:::` syntax and render containers           |    ✅     |
-| Process links              | Internal link resolution and cross-file references |    ✅     |
-| Follow Obsidian theme      | Auto-adapt to Obsidian's color theme               |    ✅     |
-| Custom primary color       | Custom brand color (when not following theme)      | `#409eff` |
-| Debug mode                 | Enable console debug logging                       |    ❌     |
+| Setting                              | Description                                                                                          |     Default     |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------- | :-------------: |
+| Display language                     | Choose the language for plugin interface and container labels (Follow Obsidian / English / 简体中文) | Follow Obsidian |
+| Follow Obsidian theme                | Automatically adapt brand colors to match Obsidian accent color                                      |        ✅        |
+| Custom primary color                 | Brand color for links and accents when not following Obsidian theme                                  |    `#409eff`    |
+| Enable typography styles             | Apply VitePress typography (headings, links, lists, and line height)                                 |        ✅        |
+| Enable code block styles             | Apply VitePress-style code blocks (window header, language labels, and code groups)                  |        ✅        |
+| Enable container styles              | Apply VitePress-style alert and collapsible container styles                                         |        ✅        |
+| Code block corner radius             | Border radius in pixels for code blocks and code groups (0–16 px)                                    |       `8`       |
+| Show line numbers                    | Display line numbers alongside code blocks in reading view                                           |        ✅        |
+| Code line highlights and annotations | Support `{1,3-5}` line highlights and `[!code focus/++/--/error/warning]` markers                    |        ✅        |
+| Parse VitePress containers           | Convert `:::` syntax to alert containers, details blocks, and code groups                            |        ✅        |
+| Process links                        | Enhance external and VitePress-style internal links                                                  |        ✅        |
+| Show external link favicons          | Fetch site favicons for external links via favicon.im                                                |        ✅        |
+| Resolve relative links               | Resolve VitePress-style relative paths and `#L10-L15` line highlight links                           |        ✅        |
+| Parse VitePress badges               | Convert `<Badge />` syntax to styled inline badges                                                   |        ✅        |
+| Parse VitePress emojis               | Convert `:emoji:` shortcodes to emoji icons                                                          |        ✅        |
+| Debug mode                           | Enable debug logging in the developer console                                                        |        ❌        |
+| Reload styles                        | Reapply theme classes and refresh rendered markdown views                                            |        -        |
+| Reset to defaults                    | Restore all options to their default values                                                          |        -        |
 
 ## License
 
