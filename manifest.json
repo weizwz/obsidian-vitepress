@@ -1,9 +1,9 @@
 {
   "id": "vitepress-theme",
   "name": "VitePress Theme",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "minAppVersion": "1.11.0",
-  "description": "VitePress Syntax Renderer for seamless documentation reading 丨 VitePress 语法渲染插件，实现文档无缝阅读",
+  "description": "VitePress Syntax Renderer for seamless documentation reading.VitePress 语法渲染插件，实现文档无缝阅读!",
   "author": "weizwz",
   "authorUrl": "https://github.com/weizwz",
   "fundingUrl": "",
