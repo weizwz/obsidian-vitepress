@@ -3,7 +3,7 @@
   "name": "VitePress Theme",
   "version": "1.1.0",
   "minAppVersion": "1.11.0",
-  "description": "VitePress-style theme with custom containers, enhanced code blocks, and modern typography.",
+  "description": "VitePress theme plug-in, so that Vitepress-based site documents can also get a good reading experience in Obsidian. VitePress 主题插件，让以 Vitepress 为基础的站点文档也能在 Obsidian 中获得良好的阅读体验",
   "author": "weizwz",
   "authorUrl": "https://github.com/weizwz",
   "fundingUrl": "",
