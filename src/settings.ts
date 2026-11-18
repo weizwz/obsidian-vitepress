@@ -1,6 +1,6 @@
-import { App, Notice, PluginSettingTab, SettingGroup } from 'obsidian'
+import { App, Notice, PluginSettingTab, SettingDefinitionItem, SettingGroup } from 'obsidian'
 import type VitePressThemePlugin from './main'
-import { DEFAULT_SETTINGS } from './types/settings'
+import { DEFAULT_SETTINGS, type VitePressSettings } from './types/settings'
 import type { LanguageSetting } from './i18n'
 
 export class VitePressSettingTab extends PluginSettingTab {
@@ -10,6 +10,268 @@ export class VitePressSettingTab extends PluginSettingTab {
   constructor(app: App, plugin: VitePressThemePlugin) {
     super(app, plugin)
     this.plugin = plugin
+  }
+
+  getControlValue(key: string): unknown {
+    return this.plugin.settings[key as keyof VitePressSettings]
+  }
+
+  async setControlValue(key: string, value: unknown): Promise<void> {
+    const settingKey = key as keyof VitePressSettings
+    ;(this.plugin.settings as unknown as Record<string, unknown>)[settingKey] = value
+    await this.plugin.saveSettings()
+
+    switch (settingKey) {
+      case 'language':
+        this.plugin.rerenderMarkdownViews()
+        this.update()
+        break
+      case 'followObsidianTheme':
+        this.plugin.updateTheme()
+        this.refreshDomState()
+        break
+      case 'customPrimaryColor':
+      case 'enableTypography':
+      case 'enableContainers':
+      case 'codeBlockRadius':
+        this.plugin.updateTheme()
+        break
+      case 'enableCodeBlocks':
+      case 'enableLinkProcessing':
+        this.plugin.updateTheme()
+        this.plugin.rerenderMarkdownViews()
+        this.refreshDomState()
+        break
+      case 'enableExternalLinkFavicon':
+        this.plugin.updateTheme()
+        this.plugin.rerenderMarkdownViews()
+        break
+      case 'showCodeLineNumbers':
+      case 'enableCodeLineAnnotations':
+      case 'enableContainerParser':
+      case 'enableRelativeLinkResolution':
+      case 'enableBadgeProcessor':
+      case 'enableEmojiProcessor':
+        this.plugin.rerenderMarkdownViews()
+        break
+      case 'debugMode':
+        break
+    }
+  }
+
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    const msg = this.plugin.getMessages().settings
+
+    return [
+      {
+        type: 'group',
+        heading: msg.groups.general,
+        items: [
+          {
+            name: msg.language.name,
+            desc: msg.language.desc,
+            control: {
+              type: 'dropdown',
+              key: 'language',
+              options: {
+                auto: msg.language.options.auto,
+                en: msg.language.options.en,
+                zh: msg.language.options.zh
+              }
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        heading: msg.groups.appearance,
+        items: [
+          {
+            name: msg.followObsidianTheme.name,
+            desc: msg.followObsidianTheme.desc,
+            control: {
+              type: 'toggle',
+              key: 'followObsidianTheme'
+            }
+          },
+          {
+            name: msg.customPrimaryColor.name,
+            desc: msg.customPrimaryColor.desc,
+            control: {
+              type: 'color',
+              key: 'customPrimaryColor',
+              disabled: () => this.plugin.settings.followObsidianTheme
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        heading: msg.groups.styles,
+        items: [
+          {
+            name: msg.enableTypography.name,
+            desc: msg.enableTypography.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableTypography'
+            }
+          },
+          {
+            name: msg.enableCodeBlocks.name,
+            desc: msg.enableCodeBlocks.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableCodeBlocks'
+            }
+          },
+          {
+            name: msg.enableContainers.name,
+            desc: msg.enableContainers.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableContainers'
+            }
+          },
+          {
+            name: msg.codeBlockRadius.name,
+            desc: msg.codeBlockRadius.desc,
+            control: {
+              type: 'slider',
+              key: 'codeBlockRadius',
+              min: 0,
+              max: 16,
+              step: 1
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        heading: msg.groups.codeBlocks,
+        items: [
+          {
+            name: msg.showCodeLineNumbers.name,
+            desc: msg.showCodeLineNumbers.desc,
+            control: {
+              type: 'toggle',
+              key: 'showCodeLineNumbers',
+              disabled: () => !this.plugin.settings.enableCodeBlocks
+            }
+          },
+          {
+            name: msg.enableCodeLineAnnotations.name,
+            desc: msg.enableCodeLineAnnotations.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableCodeLineAnnotations',
+              disabled: () => !this.plugin.settings.enableCodeBlocks
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        heading: msg.groups.features,
+        items: [
+          {
+            name: msg.enableContainerParser.name,
+            desc: msg.enableContainerParser.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableContainerParser'
+            }
+          },
+          {
+            name: msg.enableLinkProcessing.name,
+            desc: msg.enableLinkProcessing.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableLinkProcessing'
+            }
+          },
+          {
+            name: msg.enableExternalLinkFavicon.name,
+            desc: msg.enableExternalLinkFavicon.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableExternalLinkFavicon',
+              disabled: () => !this.plugin.settings.enableLinkProcessing
+            }
+          },
+          {
+            name: msg.enableRelativeLinkResolution.name,
+            desc: msg.enableRelativeLinkResolution.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableRelativeLinkResolution',
+              disabled: () => !this.plugin.settings.enableLinkProcessing
+            }
+          },
+          {
+            name: msg.enableBadgeProcessor.name,
+            desc: msg.enableBadgeProcessor.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableBadgeProcessor'
+            }
+          },
+          {
+            name: msg.enableEmojiProcessor.name,
+            desc: msg.enableEmojiProcessor.desc,
+            control: {
+              type: 'toggle',
+              key: 'enableEmojiProcessor'
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        heading: msg.groups.advanced,
+        items: [
+          {
+            name: msg.debugMode.name,
+            desc: msg.debugMode.desc,
+            control: {
+              type: 'toggle',
+              key: 'debugMode'
+            }
+          },
+          {
+            name: msg.reloadStyles.name,
+            desc: msg.reloadStyles.desc,
+            render: (setting) => {
+              setting.addButton((button) =>
+                button.setButtonText(msg.reloadStyles.button).onClick(() => {
+                  this.plugin.updateTheme()
+                  this.plugin.rerenderMarkdownViews()
+                })
+              )
+            }
+          },
+          {
+            name: msg.resetDefaults.name,
+            desc: msg.resetDefaults.desc,
+            render: (setting) => {
+              setting.addButton((button) =>
+                button
+                  .setWarning()
+                  .setButtonText(msg.resetDefaults.button)
+                  .onClick(async () => {
+                    this.plugin.settings = { ...DEFAULT_SETTINGS }
+                    await this.plugin.saveSettings()
+                    this.plugin.updateTheme()
+                    this.plugin.rerenderMarkdownViews()
+                    this.update()
+                    new Notice(msg.resetDefaults.notice)
+                  })
+              )
+            }
+          }
+        ]
+      }
+    ]
   }
 
   display(): void {
