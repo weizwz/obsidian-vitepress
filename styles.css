@@ -91,11 +91,7 @@ body.vitepress-theme.vp-feature-typography .markdown-rendered h1 {
   font-size: 2.2rem;
   border-bottom: 1px solid var(--divider-color);
   padding-bottom: 16px;
-  background: linear-gradient(135deg, var(--main-color), #bd34fe);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--main-color);
 }
 
 body.vitepress-theme.vp-feature-typography .markdown-preview-view h2,
