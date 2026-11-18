@@ -671,6 +671,20 @@ body.vitepress-theme.vp-feature-code-blocks .vp-code-lang {
   color: var(--text-faint);
   user-select: none;
   pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+body.vitepress-theme.vp-feature-code-blocks .vp-code-block-body:hover .vp-code-lang {
+  opacity: 0;
+}
+
+body.vitepress-theme.vp-feature-code-blocks .vp-code-block button.copy-code-button {
+  z-index: 3;
+  background-color: var(--code-background);
+}
+
+body.vitepress-theme.vp-feature-code-blocks .vp-code-block button.copy-code-button:hover {
+  background-color: color-mix(in srgb, var(--code-background) 85%, var(--text-normal));
 }
 
 body.vitepress-theme.vp-feature-code-blocks .vp-code-block:not(.has-title):not(.vp-code-group .vp-code-block) .vp-code-lang {
