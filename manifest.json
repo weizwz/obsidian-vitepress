@@ -1,9 +1,9 @@
 {
   "id": "vitepress-theme",
   "name": "VitePress Theme",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "minAppVersion": "1.11.0",
-  "description": "VitePress theme plug-in, so that Vitepress-based site documents can also get a good reading experience in Obsidian. VitePress 主题插件，让以 Vitepress 为基础的站点文档也能在 Obsidian 中获得良好的阅读体验",
+  "description": "VitePress Syntax Renderer for seamless documentation reading 丨 VitePress 语法渲染插件，实现文档无缝阅读",
   "author": "weizwz",
   "authorUrl": "https://github.com/weizwz",
   "fundingUrl": "",
