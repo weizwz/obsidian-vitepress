@@ -1,5 +1,6 @@
 import { App, MarkdownPostProcessorContext } from 'obsidian'
 import type VitePressThemePlugin from '../main'
+import { appendCodeIcon, getCodeIconSvg } from './codeIcons'
 
 /**
  * Parses VitePress-style custom containers
@@ -63,19 +64,19 @@ export class ContainerParser {
 
     // 监听 body 确保即便在不同 Tab 切换时也能捕捉到
     this.observer.observe(activeDocument.body, { childList: true, subtree: true })
-    
+
     // 同时也注册到插件的卸载逻辑中
     this.plugin.register(() => this.observer?.disconnect())
   }
 
   private requestGlobalScan() {
     if (this.globalScanQueued) return
-    
+
     this.globalScanQueued = true
     activeWindow.requestAnimationFrame(() => {
       this.globalScanQueued = false
       const sections = activeDocument.querySelectorAll('.markdown-preview-section')
-      sections.forEach(s => this.processCodeGroupsInSection(s))
+      sections.forEach((s) => this.processCodeGroupsInSection(s))
     })
   }
 
@@ -107,7 +108,7 @@ export class ContainerParser {
       const linesOfNodes: Node[][] = []
       let currentLine: Node[] = []
 
-      pNodes.forEach(node => {
+      pNodes.forEach((node) => {
         if (node.nodeName === 'BR') {
           linesOfNodes.push(currentLine)
           currentLine = []
@@ -131,8 +132,14 @@ export class ContainerParser {
       if (linesOfNodes.length < 3) return
 
       // 2. 解析头尾识别标志
-      const firstLineText = linesOfNodes[0].map(n => n.textContent).join('').trim()
-      const lastLineText = linesOfNodes[linesOfNodes.length - 1].map(n => n.textContent).join('').trim()
+      const firstLineText = linesOfNodes[0]
+        .map((n) => n.textContent)
+        .join('')
+        .trim()
+      const lastLineText = linesOfNodes[linesOfNodes.length - 1]
+        .map((n) => n.textContent)
+        .join('')
+        .trim()
 
       if (/^(?::\s*)?:::\s*code-group/i.test(firstLineText)) return
 
@@ -166,11 +173,11 @@ export class ContainerParser {
       // 4. 重组中间内容，克隆原生 Node 保障内部格式与事件
       for (let i = 1; i < linesOfNodes.length - 1; i++) {
         const lineNodes = linesOfNodes[i]
-        const isEmpty = lineNodes.every(n => n.nodeType === Node.TEXT_NODE && !n.textContent?.trim())
+        const isEmpty = lineNodes.every((n) => n.nodeType === Node.TEXT_NODE && !n.textContent?.trim())
         if (isEmpty) continue
-        
+
         const lineP = contentEl.createEl('p')
-        lineNodes.forEach(node => lineP.appendChild(node.cloneNode(true)))
+        lineNodes.forEach((node) => lineP.appendChild(node.cloneNode(true)))
       }
 
       // 5. 将旧段落直接替换
@@ -311,13 +318,12 @@ export class ContainerParser {
       tabEl.className = `vp-code-group-tab${tabIndex === activeIndex ? ' active' : ''}`
       tabEl.dataset.index = String(tabIndex)
 
-      const iconSvg = this.getTabIconSvg(filename, codeEl)
+      const langMatch = codeEl.className.match(/language-(\w+)/)
+      const lang = langMatch ? langMatch[1] : ''
+      const iconSvg = getCodeIconSvg(filename, lang)
       if (iconSvg) {
         const iconSpan = tabEl.createSpan({ cls: 'vp-code-group-tab-icon' })
-        const svgDoc = new DOMParser().parseFromString(iconSvg, 'image/svg+xml')
-        if (svgDoc.documentElement && svgDoc.documentElement.nodeName === 'svg') {
-          iconSpan.appendChild(svgDoc.documentElement)
-        }
+        appendCodeIcon(iconSpan, iconSvg)
       }
       tabEl.createSpan({ text: filename })
 
@@ -353,41 +359,6 @@ export class ContainerParser {
     startWrapper.appendChild(codeGroupEl)
   }
 
-  private getTabIconSvg(filename: string, codeEl: Element): string | null {
-    const name = filename.toLowerCase()
-    const langMatch = codeEl.className.match(/language-(\w+)/)
-    const lang = langMatch ? langMatch[1].toLowerCase() : ''
-
-    const icons: Record<string, string> = {
-      pnpm: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#F9AD00" d="M2 2h6v6H2zm7 0h6v6H9zm7 0h6v6h-6zm0 7h6v6h-6z"/><path fill="#4E4E4E" d="M9 9h6v6H9zm0 7h6v6H9zm7 0h6v6h-6zm-14 0h6v6H2z"/></svg>',
-      yarn: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#2C8EBB" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m4.4 14.3c-.6.5-1.5.5-2.1 0-.4-.3-.9-.5-1.5-.5-.6 0-1.1.2-1.5.5-.6.5-1.5.5-2.1 0-.5-.4-.6-1.1-.3-1.7.4-.7.6-1.5.5-2.3-.1-.9-.5-1.7-1.1-2.3-.5-.5-.5-1.3 0-1.8s1.3-.5 1.8 0c.6.6 1.3.9 2.1 1 .8.1 1.6-.1 2.3-.6.6-.4 1.4-.3 1.8.3s.3 1.4-.3 1.8c-.6.4-1 1.1-1 1.9 0 .8.4 1.5 1 1.9.6.4.8 1.2.4 1.8"/></svg>',
-      npm: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#CB3837" d="M2 7h20v10H12v2H8v-2H2zm2 2v6h4v-4h2v4h2V9zm8 0v6h2v-4h2v4h2v-4h2v4h2V9z"/></svg>',
-      bun: '<svg viewBox="0 0 24 24" width="16" height="16"><ellipse cx="12" cy="13" rx="9" ry="7" fill="#FBF0DF" stroke="#14110F" stroke-width="1.5"/><circle cx="9" cy="12" r="1.2" fill="#14110F"/><circle cx="15" cy="12" r="1.2" fill="#14110F"/><path d="M10.5 14.5q1.5 1 3 0" fill="none" stroke="#DE4E6B" stroke-width="1.5" stroke-linecap="round"/></svg>',
-      ts: '<svg viewBox="0 0 24 24" width="16" height="16"><rect width="20" height="20" x="2" y="2" rx="3" fill="#3178C6"/><path fill="#fff" d="M11 11.5H8.8V19H7v-7.5H4.8V10H11zm1.5 6.8v-1.6c.6.4 1.4.7 2.2.7.9 0 1.3-.3 1.3-.8 0-.6-.5-.8-1.6-1.2-1.4-.5-2.1-1.1-2.1-2.3 0-1.4 1.1-2.3 2.8-2.3.9 0 1.6.2 2.1.4v1.5c-.5-.3-1.2-.5-1.9-.5-.8 0-1.2.3-1.2.8 0 .5.4.7 1.5 1.1 1.5.5 2.3 1.1 2.3 2.4 0 1.4-1 2.4-3 2.4-1 0-1.9-.2-2.4-.6"/></svg>',
-      js: '<svg viewBox="0 0 24 24" width="16" height="16"><rect width="20" height="20" x="2" y="2" rx="3" fill="#F7DF1E"/><path fill="#000" d="M11 16.4c0 1.7-1 2.5-2.5 2.5-1.1 0-1.8-.5-2.2-1.3l1.3-.8c.2.4.5.7.9.7.5 0 .8-.2.8-1V10H11zm2.2 1.2 1.3-.8c.3.6.8.9 1.6.9.7 0 1.1-.3 1.1-.8 0-.5-.4-.7-1.3-1.1l-.5-.2c-1.3-.5-2.1-1.2-2.1-2.5 0-1.2.9-2.2 2.4-2.2 1.1 0 1.9.4 2.4 1.3l-1.3.8c-.3-.5-.6-.7-1.1-.7s-.8.3-.8.7c0 .5.3.7 1.2 1.1l.5.2c1.5.6 2.3 1.3 2.3 2.7 0 1.5-1.2 2.4-2.8 2.4-1.6 0-2.6-.7-2.9-1.8"/></svg>',
-      vue: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#41B883" d="M2 4h4l6 10.4L18 4h4L12 21z"/><path fill="#35495E" d="M6 4h3.5L12 8.3 14.5 4H18l-6 10.4z"/></svg>',
-      json: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#CBCB41" d="M7 4c-1.5 0-2.5 1-2.5 2.5v3c0 .8-.5 1.5-1.5 1.5v2c1 0 1.5.7 1.5 1.5v3C4.5 19 5.5 20 7 20h1v-2H7.2c-.5 0-.7-.3-.7-.8v-3c0-1-.4-1.7-1.2-2.2.8-.5 1.2-1.2 1.2-2.2v-3c0-.5.2-.8.7-.8H8V4zm10 0h-1v2h.8c.5 0 .7.3.7.8v3c0 1 .4 1.7 1.2 2.2-.8.5-1.2 1.2-1.2 2.2v3c0 .5-.2.8-.7.8H16v2h1c1.5 0 2.5-1 2.5-2.5v-3c0-.8.5-1.5 1.5-1.5v-2c-1 0-1.5-.7-1.5-1.5v-3C19.5 5 18.5 4 17 4"/></svg>',
-      css: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#264DE4" d="M4 3h16l-1.5 16.5L12 21.5l-6.5-2z"/><path fill="#fff" d="M7.5 7h9l-.3 2.5H10l.2 2h5.7l-.5 5-3.4 1-3.4-1-.2-2h2l.1 1 1.5.4 1.5-.4.2-2H8z"/></svg>',
-      html: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#E34F26" d="M4 3h16l-1.5 16.5L12 21.5l-6.5-2z"/><path fill="#fff" d="M7.5 7h9l-.2 2H9.7l.2 2h6.2l-.5 5.5-3.6 1-3.6-1-.2-2.5h2l.1 1.2 1.7.5 1.7-.5.2-2.2H8z"/></svg>',
-      sh: '<svg viewBox="0 0 24 24" width="16" height="16"><rect width="20" height="16" x="2" y="4" rx="2" fill="#4EAA25"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m7 9 3 3-3 3m5 0h5"/></svg>',
-      md: '<svg viewBox="0 0 24 24" width="16" height="16"><rect width="20" height="14" x="2" y="5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="currentColor" d="M5 15V9h2l2 2.5L11 9h2v6h-2v-3.5L9 14l-2-2.5V15zm11 0-2.5-3h1.5V9h2v3h1.5z"/></svg>'
-    }
-
-    if (name.includes('pnpm')) return icons.pnpm
-    if (name.includes('yarn')) return icons.yarn
-    if (name.includes('npm')) return icons.npm
-    if (name.includes('bun')) return icons.bun
-    if (name.endsWith('.ts') || name.endsWith('.mts') || lang === 'ts' || lang === 'typescript') return icons.ts
-    if (name.endsWith('.js') || name.endsWith('.mjs') || lang === 'js' || lang === 'javascript') return icons.js
-    if (name.endsWith('.vue') || lang === 'vue') return icons.vue
-    if (name.endsWith('.json') || lang === 'json') return icons.json
-    if (name.endsWith('.css') || name.endsWith('.scss') || lang === 'css' || lang === 'scss') return icons.css
-    if (name.endsWith('.html') || lang === 'html') return icons.html
-    if (name.endsWith('.md') || lang === 'md' || lang === 'markdown') return icons.md
-    if (name.endsWith('.sh') || lang === 'sh' || lang === 'bash' || lang === 'zsh' || lang === 'shell') return icons.sh
-    return null
-  }
-
   // ─────────────────────────────────────────────
   // 辅助方法
   // ─────────────────────────────────────────────
@@ -420,7 +391,7 @@ export class ContainerParser {
     const title = customTitle || defaultLabel
 
     const containerEl = createDiv({ cls: `vp-container vp-${typeLower}` })
-    
+
     const headerEl = containerEl.createDiv({ cls: 'vp-container-header' })
     const iconSpan = headerEl.createSpan({ cls: 'vp-container-icon' })
     const parser = new DOMParser()
@@ -430,9 +401,9 @@ export class ContainerParser {
       iconSpan.appendChild(svgEl)
     }
     headerEl.createSpan({ cls: 'vp-container-title-text', text: title })
-    
+
     containerEl.createDiv({ cls: 'vp-container-content' })
-    
+
     return containerEl
   }
 }

@@ -1,5 +1,6 @@
 import { MarkdownPostProcessorContext } from 'obsidian'
 import type VitePressThemePlugin from '../main'
+import { appendCodeIcon, getCodeIconSvg } from './codeIcons'
 
 interface FenceMeta {
   filename: string
@@ -7,8 +8,7 @@ interface FenceMeta {
   lineAnnotations: Record<number, string[]>
 }
 
-const ANNOTATION_REGEX =
-  /\s*(?:\/\/|#|--|\/\*|<!--)\s*\[!code\s+(highlight|hl|focus|\+\+|--|error|warning)(?::(\d+))?\]\s*(?:\*\/|-->)?\s*$/i
+const ANNOTATION_REGEX = /\s*(?:\/\/|#|--|\/\*|<!--)\s*\[!code\s+(highlight|hl|focus|\+\+|--|error|warning)(?::(\d+))?\]\s*(?:\*\/|-->)?\s*$/i
 
 export class CodeEnhancer {
   private plugin: VitePressThemePlugin
@@ -26,11 +26,7 @@ export class CodeEnhancer {
     let idx = 0
     codeBlocks.forEach((pre) => {
       const code = pre.querySelector('code')
-      if (
-        pre.classList.contains('frontmatter') ||
-        pre.closest('.mod-frontmatter') ||
-        (pre as HTMLElement).style.display === 'none'
-      ) {
+      if (pre.classList.contains('frontmatter') || pre.closest('.mod-frontmatter') || (pre as HTMLElement).style.display === 'none') {
         return
       }
 
@@ -158,7 +154,11 @@ export class CodeEnhancer {
 
     const langClass = Array.from(code.classList).find((c) => c.startsWith('language-'))
     const rawLang = langClass ? langClass.replace('language-', '') : ''
-    const pureLang = rawLang.replace(/\{[^}]*\}/g, '').replace(/\[[^\]]*\]/g, '').trim()
+    const dataLang = code.getAttribute('data-lang') || ''
+    const pureLang = (rawLang || dataLang)
+      .replace(/\{[^}]*\}/g, '')
+      .replace(/\[[^\]]*\]/g, '')
+      .trim()
 
     if (langClass && pureLang && rawLang !== pureLang) {
       code.classList.remove(langClass)
@@ -166,18 +166,33 @@ export class CodeEnhancer {
     }
 
     const wrapper = createDiv({ cls: 'vp-code-block' })
-    const header = createDiv({ cls: 'vp-code-block-header' })
 
-    const filename = code.getAttribute('data-filename')
-    const displayLabel = filename || pureLang
-    if (displayLabel) {
-      header.createSpan({ cls: 'vp-code-lang', text: displayLabel })
+    let filename = code.getAttribute('data-filename')?.trim() || ''
+    if (!filename && dataLang) {
+      const m = dataLang.match(/\[([^\]]+)\]/)
+      if (m) filename = m[1].trim()
     }
 
-    wrapper.appendChild(header)
+    if (filename) {
+      wrapper.classList.add('has-title')
+      const titleBar = createDiv({ cls: 'vp-code-block-title' })
+      const iconSvg = getCodeIconSvg(filename, pureLang)
+      if (iconSvg) {
+        const iconSpan = titleBar.createSpan({ cls: 'vp-code-block-title-icon' })
+        appendCodeIcon(iconSpan, iconSvg)
+      }
+      titleBar.createSpan({ cls: 'vp-code-block-title-text', text: filename })
+      wrapper.appendChild(titleBar)
+    }
+
+    const body = createDiv({ cls: 'vp-code-block-body' })
+    if (pureLang) {
+      body.createSpan({ cls: 'vp-code-lang', text: pureLang })
+    }
 
     pre.parentElement?.insertBefore(wrapper, pre)
-    wrapper.appendChild(pre)
+    wrapper.appendChild(body)
+    body.appendChild(pre)
 
     if (pureLang) {
       wrapper.dataset.language = pureLang
@@ -297,6 +312,11 @@ export class CodeEnhancer {
   }
 
   private splitCodeIntoLines(code: HTMLElement): HTMLElement[] {
+    const existingLines = Array.from(code.querySelectorAll(':scope > .vp-code-line')) as HTMLElement[]
+    if (existingLines.length > 0) {
+      return existingLines
+    }
+
     const lines: HTMLElement[] = [createSpan({ cls: 'vp-code-line' })]
     const ancestors: HTMLElement[] = []
 
@@ -419,6 +439,6 @@ export class CodeEnhancer {
     })
 
     wrapper.classList.add('has-line-numbers', 'vp-relative')
-    wrapper.insertBefore(lineNumbers, pre)
+    pre.parentElement?.insertBefore(lineNumbers, pre)
   }
 }
