@@ -19,26 +19,24 @@ export class VitePressSettingTab extends PluginSettingTab {
     const msg = this.plugin.getMessages().settings
 
     // General
-    new SettingGroup(containerEl)
-      .setHeading(msg.groups.general)
-      .addSetting((setting) => {
-        setting
-          .setName(msg.language.name)
-          .setDesc(msg.language.desc)
-          .addDropdown((dropdown) =>
-            dropdown
-              .addOption('auto', msg.language.options.auto)
-              .addOption('en', msg.language.options.en)
-              .addOption('zh', msg.language.options.zh)
-              .setValue(this.plugin.settings.language)
-              .onChange(async (value) => {
-                this.plugin.settings.language = value as LanguageSetting
-                await this.plugin.saveSettings()
-                this.plugin.rerenderMarkdownViews()
-                this.display()
-              })
-          )
-      })
+    new SettingGroup(containerEl).setHeading(msg.groups.general).addSetting((setting) => {
+      setting
+        .setName(msg.language.name)
+        .setDesc(msg.language.desc)
+        .addDropdown((dropdown) =>
+          dropdown
+            .addOption('auto', msg.language.options.auto)
+            .addOption('en', msg.language.options.en)
+            .addOption('zh', msg.language.options.zh)
+            .setValue(this.plugin.settings.language)
+            .onChange(async (value) => {
+              this.plugin.settings.language = value as LanguageSetting
+              await this.plugin.saveSettings()
+              this.plugin.rerenderMarkdownViews()
+              this.display()
+            })
+        )
+    })
 
     // Appearance
     new SettingGroup(containerEl)
@@ -75,6 +73,18 @@ export class VitePressSettingTab extends PluginSettingTab {
       .setHeading(msg.groups.styles)
       .addSetting((setting) => {
         setting
+          .setName(msg.enableTypography.name)
+          .setDesc(msg.enableTypography.desc)
+          .addToggle((toggle) =>
+            toggle.setValue(this.plugin.settings.enableTypography).onChange(async (value) => {
+              this.plugin.settings.enableTypography = value
+              await this.plugin.saveSettings()
+              this.plugin.updateTheme()
+            })
+          )
+      })
+      .addSetting((setting) => {
+        setting
           .setName(msg.enableCodeBlocks.name)
           .setDesc(msg.enableCodeBlocks.desc)
           .addToggle((toggle) =>
@@ -94,18 +104,6 @@ export class VitePressSettingTab extends PluginSettingTab {
           .addToggle((toggle) =>
             toggle.setValue(this.plugin.settings.enableContainers).onChange(async (value) => {
               this.plugin.settings.enableContainers = value
-              await this.plugin.saveSettings()
-              this.plugin.updateTheme()
-            })
-          )
-      })
-      .addSetting((setting) => {
-        setting
-          .setName(msg.enableTypography.name)
-          .setDesc(msg.enableTypography.desc)
-          .addToggle((toggle) =>
-            toggle.setValue(this.plugin.settings.enableTypography).onChange(async (value) => {
-              this.plugin.settings.enableTypography = value
               await this.plugin.saveSettings()
               this.plugin.updateTheme()
             })
