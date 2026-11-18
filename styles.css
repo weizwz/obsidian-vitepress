@@ -549,8 +549,7 @@ body.vitepress-theme.vp-feature-code-blocks .vp-code-block.has-line-numbers .vp-
 }
 
 /* Line highlight, focus, diff, error, warning */
-body.vitepress-theme.vp-feature-code-blocks .vp-code-block .vp-code-line.highlighted,
-body.vitepress-theme.vp-feature-code-blocks .vp-code-block .vp-line-number.highlighted {
+body.vitepress-theme.vp-feature-code-blocks .vp-code-block .vp-code-line.highlighted {
   background-color: color-mix(in srgb, var(--text-muted) 12%, transparent);
 }
 
