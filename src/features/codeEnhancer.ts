@@ -312,7 +312,7 @@ export class CodeEnhancer {
   }
 
   private splitCodeIntoLines(code: HTMLElement): HTMLElement[] {
-    const existingLines = Array.from(code.querySelectorAll(':scope > .vp-code-line')) as HTMLElement[]
+    const existingLines = Array.from(code.querySelectorAll<HTMLElement>(':scope > .vp-code-line'))
     if (existingLines.length > 0) {
       return existingLines
     }

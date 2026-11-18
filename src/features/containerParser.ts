@@ -73,7 +73,7 @@ export class ContainerParser {
     if (this.globalScanQueued) return
 
     this.globalScanQueued = true
-    activeWindow.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       this.globalScanQueued = false
       const sections = activeDocument.querySelectorAll('.markdown-preview-section')
       sections.forEach((s) => this.processCodeGroupsInSection(s))
